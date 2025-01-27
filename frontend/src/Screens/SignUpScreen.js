@@ -20,7 +20,7 @@ import {
   authFormReducer,
   AuthFormTypes,
   initAuthForm,
-} from '../../Reducers/authFormReducer';
+} from '../Reducers/authFormReducer';
 import axios from 'axios';
 import { useUserState } from '../Contexts/UserContext';
 
@@ -73,14 +73,14 @@ const SignUpScreen = () => {
           Alert.alert('비밀번호는 6자리 이상이어야 합니다.');
         } else {
           const emailCheckResponse = await axios.get(
-            `http://localhost:3000/api/user_table/checkEmail/${form.email}`
+            `http://192.168.x.x:3000/api/user_table/checkEmail/${form.email}` // IP 주소 수정
           );
 
           if (emailCheckResponse.data.exists) {
             Alert.alert('이미 가입된 이메일입니다.');
           } else {
             const response = await axios.post(
-              'http://localhost:3000/api/user_table/insert',
+              'http://192.168.x.x:3000/api/user_table/insert', // IP 주소 수정
               {
                 user_name: form.name,
                 user_email: form.email,
@@ -115,7 +115,7 @@ const SignUpScreen = () => {
       <View style={[styles.container, { paddingTop: top }]}>
         <View style={StyleSheet.absoluteFill}>
           <Image
-            source={require('../../assets/cover.png')}
+            source={require('../assets/cover.png')}
             style={{ width: '100%' }}
             resizeMode="cover"
           />

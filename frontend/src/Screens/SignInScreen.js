@@ -82,7 +82,7 @@ const SignInScreen = () => {
       <View style={[styles.container, { paddingTop: top }]}>
         <View style={StyleSheet.absoluteFill}>
           <Image
-            source={require('../../assets/cover.png')}
+            source={require('../assets/cover.png')} // 경로 수정
             style={{ width: '100%' }}
             resizeMode="cover"
           />
