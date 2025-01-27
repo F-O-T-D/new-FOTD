@@ -1,3 +1,4 @@
+import api from '../services/api';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import {
   StyleSheet,

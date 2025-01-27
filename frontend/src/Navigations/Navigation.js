@@ -17,7 +17,7 @@ const Navigation = () => {
       try {
         await SplashScreen.preventAutoHideAsync();
         await Asset.fromModule(
-          require('../../assets/cover.png')
+          require('../assets/cover.png')
         ).downloadAsync();
       } catch (e) {
         // eslint-disable-next-line no-console
@@ -44,5 +44,7 @@ const Navigation = () => {
     </NavigationContainer>
   );
 };
+
+console.log('user 상태:', user);
 
 export default Navigation;
