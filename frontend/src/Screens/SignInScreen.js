@@ -26,6 +26,10 @@ import {
 import axios from 'axios';
 import { useUserState } from '../Contexts/UserContext';
 
+import config from '../config'; // API URL을 config.js에서 가져옴
+
+const API_BASE_URL = config.API_BASE_URL;
+
 const SignInScreen = () => {
   const navigation = useNavigation();
   const { top, bottom } = useSafeAreaInsets();
@@ -58,7 +62,7 @@ const SignInScreen = () => {
 
       try {
         const response = await axios.post(
-          'http://localhost:3000/api/user_table/login',
+          `${API_BASE_URL}/api/user_table/login`,
           {
             user_email: form.email,
             user_password: form.password,
