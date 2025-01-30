@@ -6,6 +6,7 @@ const router = express.Router();
 // 사용자 관련 API
 router.get('/user_table', userController.getAllUsers);  // 사용자 테이블 조회
 router.post('/insert', userController.insert);  // 사용자 추가
+router.get('/checkEmail/:email', userController.checkEmail); //이메일 중복 확인
 router.post('/login', userController.login);  // 사용자 로그인
 router.get('/:userId', userController.getUser);  // 특정 사용자 조회
 router.put('/:userId', userController.update);  // 사용자 업데이트
