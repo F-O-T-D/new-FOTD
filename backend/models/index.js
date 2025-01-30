@@ -1,6 +1,7 @@
 //
 
 const Sequelize = require('sequelize');
+const dbConfig = require('../config/dbConfig');
 const User = require('./user'); // user 모델 가져오기
 const Map = require('./map'); // map 모델 가져오기
 
@@ -12,7 +13,7 @@ const sequelize = new Sequelize(
     {
         host: process.env.MYSQL_HOST, // 데이터베이스 호스트
         port: process.env.MYSQL_PORT, // 포트
-        dialect: 'mysql', // 사용하는 데이터베이스 종류 (예: mysql, postgres)
+        dialect: 'mysql', // 사용하는 데이터베이스 종류
         logging: true, // SQL 쿼리 로그를 보고 싶으면 true로 변경
     }
 );
