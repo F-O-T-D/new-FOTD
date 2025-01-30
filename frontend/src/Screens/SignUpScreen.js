@@ -105,7 +105,7 @@ const SignUpScreen = () => {
             );
             
             if (response.data.success) {
-              setUser(response.data.user);
+             // setUser(response.data.user); 자동로그인 방지
               Alert.alert('회원가입 성공!', '로그인을 진행해주세요!', [
                 {
                   text: '확인',
