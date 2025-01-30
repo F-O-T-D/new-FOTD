@@ -9,6 +9,8 @@ import { authFormReducer, initAuthForm } from "../Reducers/authFormReducer";
 import { useUserState } from '../Contexts/UserContext';
 import { useNavigation } from '@react-navigation/native';
 import { ContentRoutes } from '../Navigations/Routes';
+import config from '../config'; // config.js에서 API URL 가져오기
+
 
 
 
@@ -27,7 +29,7 @@ const MapScreen = ({ route }) => {
     console.log('user_id 확인:', user.user_id);
     try {
       const response = await axios.post(
-        `http://localhost:3000/api/list/map/${user.user_id}`,
+        `${config.API_BASE_URL}/api/list/map/${user.user_id}`,
         {
           "userId": user.user_id,
           "name": storeName,
