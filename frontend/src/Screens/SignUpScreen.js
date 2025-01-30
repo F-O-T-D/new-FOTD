@@ -23,6 +23,10 @@ import {
 } from '../Reducers/authFormReducer';
 import axios from 'axios';
 import { useUserState } from '../Contexts/UserContext';
+import config from '../config'; // src/config.js에서 가져옴
+
+const API_BASE_URL = config.API_BASE_URL; // 가져온 값 사용
+
 
 const SignUpScreen = () => {
   const [, setUser] = useUserState();
@@ -73,14 +77,14 @@ const SignUpScreen = () => {
           Alert.alert('비밀번호는 6자리 이상이어야 합니다.');
         } else {
           const emailCheckResponse = await axios.get(
-            `http://192.168.x.x:3000/api/user_table/checkEmail/${form.email}` // IP 주소 수정
+             `${API_BASE_URL}/api/user_table/checkEmail/${form.email}`
           );
 
           if (emailCheckResponse.data.exists) {
             Alert.alert('이미 가입된 이메일입니다.');
           } else {
             const response = await axios.post(
-              'http://192.168.x.x:3000/api/user_table/insert', // IP 주소 수정
+              `${API_BASE_URL}/api/user_table/insert`, // IP 주소 수정
               {
                 user_name: form.name,
                 user_email: form.email,
