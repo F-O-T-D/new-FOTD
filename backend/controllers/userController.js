@@ -16,12 +16,28 @@ const UserController = {
             console.log("📩 회원가입 요청 도착:", req.body); //디버깅 로그 추가
             
             const user = await userService.createUser(req.body);
+            console.log("✅ 회원가입 성공:", user);  // 회원가입 성공 여부 확인
             res.json({ success: true, user });
         } catch (error) {
             console.error(error);
+            console.error("❌ 회원가입 실패:", error);
+
             res.status(500).json({ success: false, error: 'Error registering user' });
         }
     },
+
+    async checkEmail(req, res) {
+        try {
+            const email = req.params.email;
+            console.log(`🔍 이메일 중복 확인 요청: ${email}`);
+
+            const user = await userService.findUserByEmail(email);
+            res.json({ exists: !!user });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ success: false, error: 'Error checking email' });
+        }
+    }, 
 
     async login(req, res) {
         try {
