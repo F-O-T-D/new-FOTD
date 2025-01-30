@@ -11,6 +11,8 @@ import { useUserState } from '../Contexts/UserContext';
 import { useFocusEffect } from '@react-navigation/native';
 import { useIsFocused } from '@react-navigation/native';
 import axios from 'axios';
+import config from '../config'; // config.js에서 API URL 가져오기
+
 
 const ListScreen = () => {
   const { bottom } = useSafeAreaInsets();
@@ -22,7 +24,7 @@ const ListScreen = () => {
   // 가게 정보를 불러오는 함수 (예시 코드, 실제 API 호출로 대체 필요)
   const fetchRestauList = async (userId) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/list/${userId}/store`);
+      const response = await fetch(`${config.API_BASE_URL}/api/list/${userId}/store`);
       const data = await response.json();
       console.log('Fetched data:', data); // 'data' 객체 콘솔에 출력
       setRestauList(data); // 가게 정보를 state에 저장
