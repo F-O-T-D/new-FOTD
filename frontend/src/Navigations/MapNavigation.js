@@ -1,5 +1,4 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
 import { MapRoutes, ContentRoutes } from './Routes';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ListScreen from '../Screens/ListScreen';
@@ -10,7 +9,6 @@ const Stack = createNativeStackNavigator();
 
 const MapNavigation = () => {
   return (
-    <NavigationContainer independent={true}>
       <Stack.Navigator>
         <Stack.Screen
           name={ContentRoutes.LIST}
@@ -49,7 +47,6 @@ const MapNavigation = () => {
           }}
         />
       </Stack.Navigator>
-    </NavigationContainer>
   );
 };
 

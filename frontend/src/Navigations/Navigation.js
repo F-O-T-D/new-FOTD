@@ -1,4 +1,3 @@
-import { NavigationContainer } from '@react-navigation/native';
 import AuthStack from './AuthStack';
 import * as SplashScreen from 'expo-splash-screen';
 import { useUserState } from '../Contexts/UserContext';
@@ -46,14 +45,8 @@ const Navigation = () => {
   }
 
   return (
-    <NavigationContainer onReady={onReady}>
-      {/* 유저 상태에 따라 AuthStack 또는 ContentTab 렌더링 */}
-      {user && user.user_id ? (
-        <ContentTab />
-      ) : (
-        <AuthStack />
-      )}
-    </NavigationContainer>
+      /* 유저 상태에 따라 AuthStack 또는 ContentTab 렌더링 */
+      user && user.user_id ? <ContentTab /> : <AuthStack />
   );
 };
 

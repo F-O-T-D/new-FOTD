@@ -4,6 +4,8 @@ import { StatusBar } from 'expo-status-bar'; // StatusBar 관리
 import Navigation from './Navigations/Navigation'; // 네비게이션 임포트
 import { UserProvider } from './Contexts/UserContext'; // Context Provider 임포트
 import * as SplashScreen from 'expo-splash-screen'; // SplashScreen 관리
+import { NavigationContainer } from '@react-navigation/native';  //NavigationContainer는 앱 전체에서 한 번만 사용
+
 
 const App = () => {
   // SplashScreen 초기화 및 숨김 처리
@@ -30,12 +32,14 @@ const App = () => {
   // 컴포넌트 렌더링
   return (
     <UserProvider>
+      <NavigationContainer>
       <View style={{ flex: 1 }}>
         {/* StatusBar 설정 */}
         <StatusBar style="auto" />
         {/* 네비게이션 */}
         <Navigation />
       </View>
+      </NavigationContainer>
     </UserProvider>
   );
 };
