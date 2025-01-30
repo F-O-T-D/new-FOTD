@@ -13,6 +13,8 @@ const UserController = {
 
     async insert(req, res) {
         try {
+            console.log("📩 회원가입 요청 도착:", req.body); //디버깅 로그 추가
+            
             const user = await userService.createUser(req.body);
             res.json({ success: true, user });
         } catch (error) {

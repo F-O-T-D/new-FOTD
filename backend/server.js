@@ -12,7 +12,12 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // 미들웨어 설정
-app.use(cors());
+app.use(cors({
+    origin: "*",  // 모든 도메인 허용 (보안 설정 필요 시 특정 도메인만 허용)
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    allowedHeaders: "Content-Type, Authorization"
+}));
+
 app.use(bodyParser.json());
 app.use(
     express.json({
@@ -50,7 +55,13 @@ app.use((error, req, res, next) => {
 });
 
 // 서버 시작
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => { //네트워크 바뀌어도 다른 기기에서 접근 가능 설정
     console.log(`🚀 서버가 포트 ${PORT}에서 실행 중입니다.`);
     console.log(`🌐 http://localhost:${PORT}`);
+});
+
+app._router.stack.forEach((r) => {
+  if (r.route && r.route.path) {
+      console.log(`🛠️ 등록된 라우트: ${r.route.path} [${Object.keys(r.route.methods).join(', ').toUpperCase()}]`);
+  }
 });
