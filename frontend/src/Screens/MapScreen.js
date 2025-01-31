@@ -29,7 +29,8 @@ const MapScreen = ({ route }) => {
     console.log('user_id 확인:', user.user_id);
     try {
       const response = await axios.post(
-        `${config.API_BASE_URL}/api/list/map/${user.user_id}`,
+        + `${config.API_BASE_URL}/api/user/${user.user_id}/map/store`
+,
         {
           "userId": user.user_id,
           "name": storeName,

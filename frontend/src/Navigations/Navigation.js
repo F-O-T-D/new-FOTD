@@ -3,10 +3,11 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useUserState } from '../Contexts/UserContext';
 import { useEffect, useState } from 'react';
 import { Asset } from 'expo-asset';
+import { View, Text } from 'react-native';
 import ContentTab from './ContentTap';
 
 const Navigation = () => {
-  const [user] = useUserState(); // UserContext에서 유저 상태 가져오기
+  const { user } = useUserState(); // UserContext에서 유저 상태 가져오기
   console.log('현재 user 상태:', user);
 
   const [isReady, setIsReady] = useState(false); // SplashScreen 준비 상태
@@ -43,10 +44,17 @@ const Navigation = () => {
     console.log('SplashScreen 준비되지 않음');
     return null;
   }
-
+/* 유저 상태에 따라 AuthStack 또는 ContentTab 렌더링 
   return (
-      /* 유저 상태에 따라 AuthStack 또는 ContentTab 렌더링 */
       user && user.user_id ? <ContentTab /> : <AuthStack />
+  );*/
+
+   // ✅ user 상태가 정상적으로 업데이트되는지 확인
+   return (
+    <View>
+      <Text>현재 로그인된 사용자 ID: {user ? user.user_id : '없음'}</Text>
+      {user && user.user_id ? <ContentTab /> : <AuthStack />}
+    </View>
   );
 };
 

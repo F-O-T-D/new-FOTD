@@ -6,16 +6,19 @@ import {
   View,
   Keyboard,
   Platform,
+  Text,
 } from 'react-native';
 import { PRIMARY, WHITE } from '../Colors';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { MapRoutes } from '../Navigations/Routes';
+import { useUserState } from '../Contexts/UserContext';
 
 const BOTTOM = 20;
 const KAKAO_REST_API_KEY = '3426840577241300296b9ffb9dd7d3f4';
 
 const InputFAB = () => {
+  const { user } = useUserState(); 
   const [showInput, setShowInput] = useState(false);
   const [storeName, setStoreName] = useState('');
   const [address, setAddress] = useState(''); // 상세주소
@@ -46,7 +49,16 @@ const InputFAB = () => {
   };
 
   const getStoreAddress = async () => {
+    
     try {
+      if (!user || !user.user_id) {
+        console.error("❌ userId가 없습니다.");
+        return;
+      }
+
+      console.log("🔹 현재 로그인된 userId:", user.user_id);
+      
+      // 카카오 지도 API 요청
       const response = await fetch(
         `https://dapi.kakao.com/v2/local/search/keyword.json?query=${storeName}`,
         {
@@ -63,10 +75,19 @@ const InputFAB = () => {
         setLatitude(firstResult.y);
         setLongitude(firstResult.x);
 
-        console.log('storeName:', storeName);
-        console.log('Address:', firstResult.address_name);
-        console.log('Latitude:', firstResult.y);
-        console.log('Longitude:', firstResult.x);
+       // ✅ userId 포함해서 가게 저장 API 요청
+       const backendResponse = await fetch(`/api/map/${user.user_Id}/store`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            storeName: firstResult.place_name,
+            address: firstResult.address_name,
+            latitude: firstResult.y,
+            longitude: firstResult.x,
+        }),
+    });
+
+    console.log('📌 가게 데이터 저장 요청:', await backendResponse.json());
 
         navigateToMapScreen(firstResult);
         toggleInput(); // 상세주소, 위도, 경도 설정 후에 입력 창 닫기

@@ -13,7 +13,11 @@
       },
       "assetBundlePatterns": ["**/*"],
       "ios": {
-        "supportsTablet": true
+        "infoPlist": {
+          "NSAppTransportSecurity": {
+            "NSAllowsArbitraryLoads": true
+          }
+        }
       },
       "android": {
         "adaptiveIcon": {
@@ -24,12 +28,7 @@
       "web": {
         "favicon": "./src/assets/favicon.png"
       },
-      "jsEngine": "hermes",
-      "doctor": {
-        "reactNativeDirectoryCheck": {
-          "listUnknownPackages": false
-        }
-      }
+      "jsEngine": "hermes"
     }
   }
   
