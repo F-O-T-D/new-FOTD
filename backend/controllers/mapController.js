@@ -31,7 +31,17 @@ const MapController = {
             console.error(error);
             res.status(500).json({ success: false, error: 'Error deleting store' });
         }
-    },
+    },async addStore(req, res) {
+        try {
+            const { userId } = req.params;
+            const { name, address, lat, lng } = req.body;
+            const newStore = await mapService.addStore(userId, name, address, lat, lng);
+            res.status(201).json({ success: true, message: "Store added successfully", store: newStore });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ success: false, error: 'Error adding store' });
+        }
+    }
 };
 
 module.exports = MapController;

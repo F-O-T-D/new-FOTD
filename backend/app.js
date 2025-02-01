@@ -20,7 +20,7 @@ app.use(express.json({ limit: '50mb' }));
 
 // ✅ 라우트 설정
 app.use('/api/user', userRoutes);
-app.use('/api/maps', mapRoutes);
+app.use('/api/map', mapRoutes);
 
 // ✅ 없는 라우트 처리
 app.use((req, res, next) => {
