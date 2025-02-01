@@ -24,7 +24,7 @@ const ListScreen = () => {
   // 가게 정보를 불러오는 함수 (예시 코드, 실제 API 호출로 대체 필요)
   const fetchRestauList = async (userId) => {
     try {
-      const response = await fetch(`${config.API_BASE_URL}/api/list/${userId}/store`);
+      const response = await fetch(`${config.API_BASE_URL}/api/map/${userId}/store`);
       const data = await response.json();
       console.log('Fetched data:', data); // 'data' 객체 콘솔에 출력
       setRestauList(data); // 가게 정보를 state에 저장
@@ -36,13 +36,13 @@ const ListScreen = () => {
   const handleDeleteItem = async (deletedItemId) => {
     try {
       await axios.delete(
-        `http://localhost:3000/api/list/${user.user_id}/store/${deletedItemId}`
+        `${config.API_BASE_URL}/api/map/${user.user_id}/store/${deletedItemId}`
       );
       console.log(`가게가 삭제되었습니다.`);
 
       // 서버에서 업데이트된 가게 정보를 다시 불러와서 상태를 업데이트
       try {
-        const updatedResponse = await fetch(`http://localhost:3000/api/list/${user.user_id}/store`);
+        const updatedResponse = await fetch(`${config.API_BASE_URL}/api/map/${user.user_id}/store`);
         const updatedData = await updatedResponse.json();
         setRestauList(updatedData);
       } catch (error) {

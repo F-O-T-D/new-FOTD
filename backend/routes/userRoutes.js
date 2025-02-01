@@ -17,9 +17,4 @@ router.get('/:userId', userController.getUser);  // 특정 사용자 조회
 router.put('/:userId', userController.update);  // 사용자 업데이트
 router.delete('/:userId', userController.delete);  // 사용자 삭제
 
-// 지도 관련 API (이전 `routes/user.js`에서 가져온 기능)
-router.get('/:userId/store', mapController.getStores);  // 특정 사용자의 가게 목록 조회
-router.get('/:userId/store/:storeId', mapController.getStoreById);  // 특정 가게 조회
-router.delete('/:userId/store/:storeId', mapController.deleteStore);  // 특정 가게 삭제
-
 module.exports = router;
