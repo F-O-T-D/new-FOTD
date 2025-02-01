@@ -13,6 +13,17 @@ const MapService = {
     async deleteStore(storeId) {
         return Map.destroy({ where: { storeId } });
     },
+
+    //  // 가게 추가 기능
+    //  async addStore(userId, name, address, lat, lng) {
+    //     return await db.Store.create({
+    //         userId,
+    //         name,
+    //         address,
+    //         latitude: lat,
+    //         longitude: lng
+    //     });
+    // }
 };
 
 module.exports = MapService;

@@ -11,9 +11,9 @@ import { PRIMARY, WHITE } from '../Colors';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { MapRoutes } from '../Navigations/Routes';
+import config from "../config";  // ✅ config.js에서 API 키 가져오기
 
 const BOTTOM = 20;
-const KAKAO_REST_API_KEY = '3426840577241300296b9ffb9dd7d3f4';
 
 const InputFAB = () => {
   const [showInput, setShowInput] = useState(false);
@@ -45,18 +45,26 @@ const InputFAB = () => {
     setLongitude(0);
   };
 
+  // ✅ Kakao API를 호출하여 가게 주소 가져오기
   const getStoreAddress = async () => {
     try {
+      console.log(`🔍 Kakao API 요청: ${storeName}`); // ✅ 검색어 확인 로그 추가
+
       const response = await fetch(
         `https://dapi.kakao.com/v2/local/search/keyword.json?query=${storeName}`,
         {
+          method: 'GET',
           headers: {
-            Authorization: `KakaoAK ${KAKAO_REST_API_KEY}`,
+            Authorization: `KakaoAK ${config.KAKAO_REST_API_KEY}`, // ✅ REST API 키 적용
+            'Content-Type': 'application/json',
           },
         }
       );
 
+      console.log('✅ Response Status:', response.status); // ✅ 응답 상태 확인
       const data = await response.json();
+      console.log('📍 Kakao API 응답 데이터:', data); // ✅ 응답 데이터 확인
+
       if (data.documents && data.documents.length > 0) {
         const firstResult = data.documents[0];
         setAddress(firstResult.address_name);
@@ -68,19 +76,20 @@ const InputFAB = () => {
         console.log('Latitude:', firstResult.y);
         console.log('Longitude:', firstResult.x);
 
-        navigateToMapScreen(firstResult);
-        toggleInput(); // 상세주소, 위도, 경도 설정 후에 입력 창 닫기
+        return firstResult; // ✅ 검색된 장소 데이터를 반환
       } else {
-        console.log('No results found');
+        console.log('❌ No results found');
+        return null;
       }
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('❌ Error fetching data:', error);
+      return null;
     }
   };
 
+  // ✅ 검색된 장소를 지도 화면으로 이동시키는 함수
   const navigateToMapScreen = (result) => {
     if (result) {
-      // result가 유효한지 확인
       navigation.navigate(MapRoutes.MAP, {
         storeName: storeName,
         address: result.address_name,
@@ -90,18 +99,17 @@ const InputFAB = () => {
     }
   };
 
-  const onPressButton = () => {
+  // ✅ 버튼 클릭 시 실행되는 함수 (비동기 처리 개선)
+  const onPressButton = async () => {
     if (showInput) {
       if (storeName.trim() !== '') {
-        getStoreAddress()
-          .then(() => {
-            navigateToMapScreen();
-            toggleInput();
-          })
-          .catch((error) => {
-            console.error('Error:', error);
-            toggleInput();
-          });
+        const result = await getStoreAddress(); // ✅ 가게 검색 API 호출
+
+        if (result) {
+          navigateToMapScreen(result); // ✅ 검색 결과를 지도 화면으로 이동
+        }
+        
+        toggleInput(); // ✅ 검색 후 입력창 닫기
       } else {
         toggleInput();
       }

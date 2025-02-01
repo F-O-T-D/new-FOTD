@@ -11,7 +11,7 @@ router.get('/:userId/store/:storeId', mapController.getStoreById);
 // 특정 사용자 특정 가게 삭제 (DELETE /api/map/:userId/store/:storeId)
 router.delete('/:userId/store/:storeId', mapController.deleteStore);
 
-// 특정 사용자의 가게 추가 (POST /api/map/:userId)
-router.post('/:userId', mapController.addStore);
+// // 특정 사용자의 가게 추가 (POST /api/map/:userId)
+// router.post('/:userId', mapController.addStore);
 
 module.exports = router;

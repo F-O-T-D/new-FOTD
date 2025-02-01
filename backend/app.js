@@ -16,7 +16,7 @@ app.use(cors({
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     allowedHeaders: "Content-Type, Authorization"
 }));
-app.use(express.json({ limit: '50mb' }));
+app.use(express.json());
 
 // ✅ 라우트 설정
 app.use('/api/user', userRoutes);
