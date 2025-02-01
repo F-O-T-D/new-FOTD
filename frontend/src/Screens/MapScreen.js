@@ -146,76 +146,79 @@ const getMapHtml = () => `
 <head>
   <meta charset="utf-8">
   <title>카카오 지도</title>
-<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=${config.KAKAO_JAVASCRIPT_KEY}&libraries=services"></script>
+  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=${config.KAKAO_JAVASCRIPT_KEY}&libraries=services"></script>
 </head>
 <body>
   <div id="map" style="width:100%;height:400px;"></div>
-  console.log("✅ 카카오 지도 API 로드됨");
-
   <script>
-    var mapContainer = document.getElementById('map'); 
-    var mapOption = { center: new kakao.maps.LatLng(37.566826, 126.9786567), level: 3 };
-    var map = new kakao.maps.Map(mapContainer, mapOption);
-    
-    console.log("✅ 지도 생성됨:", map);
+    console.log("✅ 카카오 지도 API 로드됨");
 
-    var ps = new kakao.maps.services.Places();
-    var infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
+    function initMap() {
+      var mapContainer = document.getElementById('map'); 
+      var mapOption = { center: new kakao.maps.LatLng(37.566826, 126.9786567), level: 3 };
+      var map = new kakao.maps.Map(mapContainer, mapOption);
+      console.log("✅ 지도 생성 완료:", map);
 
-     function searchPlaces(query) {
-      console.log("🔍 WebView에서 searchPlaces 실행됨:", query);
-      ps.keywordSearch(query, function (data, status) {
-        console.log("📍 검색 결과:", status, "데이터:", data);
+      var ps = new kakao.maps.services.Places();
+      var infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
 
-         if (status === kakao.maps.services.Status.OK) {
-      var bounds = new kakao.maps.LatLngBounds();
-      var results = [];
-      
-      for (var i = 0; i < data.length; i++) {
-        displayMarker(data[i]);
-        bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
-        results.push({
-          name: data[i].place_name,
-          address: data[i].road_address_name || data[i].address_name,
-          lat: data[i].y,
-          lng: data[i].x
+      function searchPlaces(query) {
+        console.log("🔍 WebView에서 searchPlaces 실행됨:", query);
+        ps.keywordSearch(query, function (data, status) {
+          console.log("📍 검색 결과:", status, "데이터:", data);
+
+          if (status === kakao.maps.services.Status.OK) {
+            var bounds = new kakao.maps.LatLngBounds();
+            var results = [];
+
+            for (var i = 0; i < data.length; i++) {
+              displayMarker(data[i]);
+              bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
+              results.push({
+                name: data[i].place_name,
+                address: data[i].road_address_name || data[i].address_name,
+                lat: data[i].y,
+                lng: data[i].x
+              });
+            }
+
+            map.setBounds(bounds);
+            // React Native로 검색 결과 전송
+            window.ReactNativeWebView.postMessage(JSON.stringify(results));
+          } else {
+            console.log("❌ 검색 결과 없음");
+            window.ReactNativeWebView.postMessage(JSON.stringify([]));
+          }
         });
       }
 
-      map.setBounds(bounds);
+      function displayMarker(place) {
+        var marker = new kakao.maps.Marker({
+          map: map,
+          position: new kakao.maps.LatLng(place.y, place.x),
+        });
 
-      // React Native로 검색 결과 전송
-      window.ReactNativeWebView.postMessage(JSON.stringify(results));
-    } else {
-      console.log("❌ 검색 결과 없음");
-      window.ReactNativeWebView.postMessage(JSON.stringify([]));
+        kakao.maps.event.addListener(marker, 'click', function () {
+          infowindow.setContent('<div style="padding:5px;font-size:12px;">' + place.place_name + '</div>');
+          infowindow.open(map, marker);
+
+          // React Native로 장소 정보 전달
+          window.ReactNativeWebView.postMessage(JSON.stringify({
+            name: place.place_name,
+            address: place.road_address_name || place.address_name,
+            lat: place.y,
+            lng: place.x
+          }));
+        });
+      }
     }
-  });
-}
 
-    function displayMarker(place) {
-      var marker = new kakao.maps.Marker({
-        map: map,
-        position: new kakao.maps.LatLng(place.y, place.x),
-      });
-
-      kakao.maps.event.addListener(marker, 'click', function () {
-        infowindow.setContent('<div style="padding:5px;font-size:12px;">' + place.place_name + '</div>');
-        infowindow.open(map, marker);
-
-        // React Native로 장소 정보 전달
-        window.ReactNativeWebView.postMessage(JSON.stringify({
-          name: place.place_name,
-          address: place.road_address_name || place.address_name,
-          lat: place.y,
-          lng: place.x
-        }));
-      });
-    }
+    kakao.maps.load(initMap); // ✅ Kakao API가 로드된 후 initMap 실행
   </script>
 </body>
 </html>
 `;
+
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
