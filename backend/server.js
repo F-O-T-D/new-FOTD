@@ -26,7 +26,7 @@ app.use(
 );
 
 // 라우트 설정
-app.use('/api/user_table', userRoutes);
+app.use('/api/user', userRoutes);
 app.use('/api/user_table/:userId/map', mapRoutes);
 
 // DB 연결 확인
