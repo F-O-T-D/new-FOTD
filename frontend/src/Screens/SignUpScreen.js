@@ -67,7 +67,7 @@ const SignUpScreen = () => {
   };
 
   const onSubmit = async () => {
-    console.log("🚀 회원가입 API 요청 URL:", `${API_BASE_URL}/api/user_table/insert`); // 로그 추가
+    console.log("🚀 회원가입 API 요청 URL:", `${API_BASE_URL}/api/user/insert`); // 로그 추가
 
 
     Keyboard.dismiss();
@@ -79,11 +79,11 @@ const SignUpScreen = () => {
         } else if (!isPasswordValid(form.password)) {
           Alert.alert('비밀번호는 6자리 이상이어야 합니다.');
         } else {
-          console.log("📩 이메일 중복 확인 요청:", `${API_BASE_URL}/api/user_table/checkEmail/${form.email}`);
+          console.log("📩 이메일 중복 확인 요청:", `${API_BASE_URL}/api/user/checkEmail/${form.email}`);
 
 
           const emailCheckResponse = await axios.get(
-             `${API_BASE_URL}/api/user_table/checkEmail/${form.email}`
+             `${API_BASE_URL}/api/user/checkEmail/${form.email}`
           );
 
           if (emailCheckResponse.data.exists) {
@@ -96,7 +96,7 @@ const SignUpScreen = () => {
             });
 
             const response = await axios.post(
-                `${API_BASE_URL}/api/user_table/insert`,
+                `${API_BASE_URL}/api/user/insert`,
                 {
                     user_name: form.name,
                     user_email: form.email,
