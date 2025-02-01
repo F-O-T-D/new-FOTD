@@ -1,3 +1,10 @@
+/*
+가게 목록 화면 (메인 화면)
+
+사용자가 추가한 가게 목록을 보여줌.
+InputFAB 버튼을 눌러 MapScreen.js로 이동.
+*/
+
 import { TextInput, View } from 'react-native';
 import { BACKCARROT, GRAY } from '../Colors';
 import EmptyList from '../Components/EmptyList';
@@ -21,7 +28,7 @@ const ListScreen = () => {
   const [user, setUser] = useUserState();
   const isFocused = useIsFocused();
 
-  // 가게 정보를 불러오는 함수 (예시 코드, 실제 API 호출로 대체 필요)
+  // 사용자의 가게 목록을 서버에서 가져와 상태로 저장
   const fetchRestauList = async (userId) => {
     try {
       const response = await fetch(`${config.API_BASE_URL}/api/map/${userId}/store`);
@@ -33,6 +40,7 @@ const ListScreen = () => {
     }
   };
 
+  //특정 가게 삭제, 삭제후 최신 목록 다시 가져옴
   const handleDeleteItem = async (deletedItemId) => {
     try {
       await axios.delete(
@@ -53,15 +61,21 @@ const ListScreen = () => {
     }
   };
 
+  //지도화면으로 이동
   const buttonPress = () => {
+    console.log("📍 버튼 눌림! lat, lng 값:", lat, lng); // ✅ 로그 추가
     navigation.navigate(MapRoutes.MAP, {
       latitude: lat,
       longitude: lng,
     });
   };
+  
 
+//화면이 포커스될 때마다 가게 목록을 갱신
   useFocusEffect(
     React.useCallback(() => {
+      console.log("🔄 useFocusEffect 실행됨! user_id:", user?.user_id); // ✅ 로그 추가
+  
       const fetchUpdatedList = async () => {
         try {
           await fetchRestauList(user.user_id);
@@ -79,8 +93,11 @@ const ListScreen = () => {
       style={{ flex: 1, paddingBottom: bottom, backgroundColor: BACKCARROT }}
     >
       {restauList.length ? <List data={restauList} onDeleteItem={handleDeleteItem} /> : <EmptyList />}
-      <InputFAB onSubmit={buttonPress} />
-    </View>
+      <InputFAB onSubmit={() => {
+        console.log("✅ InputFAB 버튼 클릭됨!");
+        buttonPress();
+        }} />    
+      </View>
   );
 };
 // 버튼에서 위도 경도 전달해 주면 된다..

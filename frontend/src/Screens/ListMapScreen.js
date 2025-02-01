@@ -1,3 +1,9 @@
+/*
+가게를 지도에서 보여주는 화면
+
+특정 가게의 위치를 카카오맵 WebView로 띄워줌.
+*/
+
 import * as React from 'react';
 import { WebView } from 'react-native-webview';
 import { StyleSheet, View, Text } from 'react-native';
