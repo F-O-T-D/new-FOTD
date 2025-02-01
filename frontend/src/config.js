@@ -2,7 +2,7 @@ import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 
 // 🚨 개발 PC의 실제 IP 주소 (Wi-Fi IPv4 주소를 직접 입력)
-const LOCAL_IP = "10.50.111.40"; // PC의 IP 주소를 수동 설정
+const LOCAL_IP = "172.30.1.98"; // PC의 IP 주소를 수동 설정
 
 // Expo 환경에서 실행될 때 개발 PC의 IP 자동 감지
 export const API_BASE_URL = Constants.manifest?.debuggerHost

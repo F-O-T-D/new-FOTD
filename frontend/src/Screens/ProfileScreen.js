@@ -20,7 +20,7 @@ const ProfileScreen = () => {
         onPress: async () => {
           try {
             const response = await axios.delete(
-              `http://localhost:3000/api/user_table/delete/${user.user_id}`
+              `http://localhost:3000/api/user/delete/${user.user_id}`
             );
 
             if (response.data.success) {
