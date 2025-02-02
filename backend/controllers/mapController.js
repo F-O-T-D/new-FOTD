@@ -31,7 +31,9 @@ const MapController = {
             console.error(error);
             res.status(500).json({ success: false, error: 'Error deleting store' });
         }
-    },async addStore(req, res) {
+    },
+    
+    async addStore(req, res) {
         try {
             const { userId } = req.params;
             const { name, address, lat, lng } = req.body;

@@ -14,16 +14,16 @@ const MapService = {
         return Map.destroy({ where: { storeId } });
     },
 
-    //  // 가게 추가 기능
-    //  async addStore(userId, name, address, lat, lng) {
-    //     return await db.Store.create({
-    //         userId,
-    //         name,
-    //         address,
-    //         latitude: lat,
-    //         longitude: lng
-    //     });
-    // }
+     // 가게 추가 기능
+     async addStore(userId, name, address, lat, lng) {
+        return await Map.create({ // ✅ Map 모델 사용하여 DB에 저장
+            userId,
+            name,
+            address,
+            lat,  
+            lng   
+        });
+    }
 };
 
 module.exports = MapService;
