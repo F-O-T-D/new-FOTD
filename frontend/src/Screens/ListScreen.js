@@ -63,12 +63,13 @@ const ListScreen = () => {
 
   //지도화면으로 이동
   const buttonPress = () => {
-    console.log("📍 버튼 눌림! lat, lng 값:", lat, lng); // ✅ 로그 추가
+    console.log("📍 버튼 눌림! searchQuery 값:", searchQuery);
+  
     navigation.navigate(MapRoutes.MAP, {
-      latitude: lat,
-      longitude: lng,
+      searchQuery: searchQuery, // ✅ 검색어 함께 전달
     });
   };
+  
   
 
 //화면이 포커스될 때마다 가게 목록을 갱신
