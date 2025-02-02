@@ -76,20 +76,28 @@ const MapScreen = () => {
       alert("장소를 선택해주세요!");
       return;
     }
-
+  
+    console.log("📩 장소 등록 요청:", {
+      userId: user?.user_id,
+      name: selectedPlace.name,
+      address: selectedPlace.address,
+      lat: selectedPlace.lat,
+      lng: selectedPlace.lng,
+    });
+  
     try {
-      const response = await axios.post(`${config.API_BASE_URL}/api/map/${user.user_id}`, {
-        userId: user.user_id,
+      const response = await axios.post(`${config.API_BASE_URL}/api/map/${user?.user_id}`, {
+        userId: user?.user_id,
         name: selectedPlace.name,
         address: selectedPlace.address,
         lat: selectedPlace.lat,
         lng: selectedPlace.lng,
       });
-
-      console.log("등록 완료:", response.data);
+  
+      console.log("✅ 등록 완료:", response.data);
       navigation.navigate("ListScreen", { refresh: true });
     } catch (error) {
-      console.error("등록 오류:", error);
+      console.error("❌ 등록 오류:", error.response?.data || error.message);
     }
   };
 
@@ -117,12 +125,13 @@ const MapScreen = () => {
 
       {/* 카카오 지도 WebView */}
       <WebView
-        ref={webViewRef}
-        source={{ html: getMapHtml() }}
-        javaScriptEnabled={true}  // ✅ JavaScript 실행 허용
-        domStorageEnabled={true}   // ✅ 웹 페이지의 localStorage 사용 허용
-        onMessage={handleMessage}
-      />
+  ref={webViewRef}
+  source={{ html: getMapHtml() }}
+  javaScriptEnabled={true} // ✅ JavaScript 실행 허용
+  domStorageEnabled={true} // ✅ localStorage 사용 허용
+  onMessage={handleMessage}
+  onLoad={() => webViewRef.current.injectJavaScript('console.log("✅ WebView Loaded!");')}
+/>
 
       {/* 선택한 장소 정보 */}
       {selectedPlace && (
@@ -149,12 +158,17 @@ const getMapHtml = () => `
   <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=${config.KAKAO_JAVASCRIPT_KEY}&libraries=services"></script>
 </head>
 <body>
-  <div id="map" style="width:100%;height:400px;"></div>
+  <div id="map" style="width:100%; height:500px; background-color: lightgray;"></div>
   <script>
     console.log("✅ 카카오 지도 API 로드됨");
 
     function initMap() {
-      var mapContainer = document.getElementById('map'); 
+      var mapContainer = document.getElementById('map');
+      if (!mapContainer) {
+        console.error("❌ 지도 컨테이너를 찾을 수 없습니다.");
+        return;
+      } 
+
       var mapOption = { center: new kakao.maps.LatLng(37.566826, 126.9786567), level: 3 };
       var map = new kakao.maps.Map(mapContainer, mapOption);
       console.log("✅ 지도 생성 완료:", map);
@@ -183,7 +197,6 @@ const getMapHtml = () => `
             }
 
             map.setBounds(bounds);
-            // React Native로 검색 결과 전송
             window.ReactNativeWebView.postMessage(JSON.stringify(results));
           } else {
             console.log("❌ 검색 결과 없음");
@@ -202,7 +215,6 @@ const getMapHtml = () => `
           infowindow.setContent('<div style="padding:5px;font-size:12px;">' + place.place_name + '</div>');
           infowindow.open(map, marker);
 
-          // React Native로 장소 정보 전달
           window.ReactNativeWebView.postMessage(JSON.stringify({
             name: place.place_name,
             address: place.road_address_name || place.address_name,
@@ -213,11 +225,12 @@ const getMapHtml = () => `
       }
     }
 
-    kakao.maps.load(initMap); // ✅ Kakao API가 로드된 후 initMap 실행
+    window.onload = initMap; // ✅ Kakao API가 로드된 후 initMap 실행
   </script>
 </body>
 </html>
 `;
+
 
 
 const styles = StyleSheet.create({
