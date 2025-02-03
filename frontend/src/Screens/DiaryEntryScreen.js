@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native';
-import { useUserState } from '../Contexts/UserContext';  // ✅ 유저 상태 import
+import { useUserState } from '../Contexts/UserContext';
 import axios from 'axios';
 import config from '../config';
 
@@ -11,7 +12,7 @@ const DiaryEntryScreen = ({ route }) => {
   const navigation = useNavigation();
   const [foodImage, setFoodImage] = useState(null);
   const [content, setContent] = useState('');
-  const [user] = useUserState();  // ✅ 현재 로그인된 유저 가져오기
+  const [user] = useUserState();
 
   // ✅ 이미지 선택 함수
   const pickImage = async () => {
@@ -36,7 +37,7 @@ const DiaryEntryScreen = ({ route }) => {
       }
 
       const newDiary = {
-        userId: user.user_id,  // ✅ 올바른 user_id 사용
+        userId: user.user_id,
         date,
         content,
         image: foodImage || null,
@@ -44,7 +45,7 @@ const DiaryEntryScreen = ({ route }) => {
 
       console.log("🚀 저장 요청 데이터:", newDiary);
 
-      const response = await axios.post(`${config.API_BASE_URL}/api/diary/${user.user_id}/diary`, newDiary); // ✅ URL 수정 (diaries → diary)
+      const response = await axios.post(`${config.API_BASE_URL}/api/diary/${user.user_id}/diary`, newDiary);
       console.log("✅ 저장 완료:", response.data);
 
       // 저장 후 DiaryListScreen으로 이동
@@ -55,14 +56,22 @@ const DiaryEntryScreen = ({ route }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.date}>{date ? `${date}의 음식 일기` : "날짜를 선택해주세요."}</Text>
+    <SafeAreaView style={styles.container}>
+      {/* ✅ 날짜 표시 */}
+      <View style={styles.dateContainer}>
+        <Text style={styles.dateText}>{date}</Text>
+      </View>
 
+      {/* ✅ 이미지 선택 */}
       <TouchableOpacity onPress={pickImage} style={styles.imageContainer}>
-        {foodImage ? <Image source={{ uri: foodImage }} style={styles.image} /> : <Text>이미지 추가</Text>}
+        {foodImage ? (
+          <Image source={{ uri: foodImage }} style={styles.image} />
+        ) : (
+          <Text style={styles.imagePlaceholder}>📷 사진 추가</Text>
+        )}
       </TouchableOpacity>
 
-      <Text style={styles.label}>내용을 입력하세요</Text>
+      {/* ✅ 입력 필드 */}
       <TextInput
         style={styles.input}
         value={content}
@@ -71,22 +80,76 @@ const DiaryEntryScreen = ({ route }) => {
         multiline
       />
 
+      {/* ✅ 저장 버튼 */}
       <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
         <Text style={styles.saveButtonText}>저장하기</Text>
       </TouchableOpacity>
-    </View>
+      </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#FFF5EC', padding: 20, alignItems: 'center' },
-  date: { fontSize: 18, fontWeight: 'bold', color: '#F97316', marginBottom: 10 },
-  imageContainer: { width: 200, height: 200, backgroundColor: '#EEE', justifyContent: 'center', alignItems: 'center', marginBottom: 20 },
-  image: { width: '100%', height: '100%', borderRadius: 10 },
-  label: { fontSize: 16, fontWeight: 'bold', color: '#333', marginBottom: 5 },
-  input: { width: '90%', height: 100, borderWidth: 1, borderRadius: 10, padding: 10, backgroundColor: '#FFF' },
-  saveButton: { width: 327, height: 44, backgroundColor: '#F97316', borderRadius: 30, justifyContent: 'center', alignItems: 'center', marginTop: 20 },
-  saveButtonText: { color: 'white', fontWeight: 'bold', fontSize: 16 },
+  container: {
+    flex: 1,
+    backgroundColor: '#FFF5EC',
+    padding: 20,
+    alignItems: 'center',
+
+  },
+  dateContainer: { 
+    backgroundColor: '#F97316', 
+    paddingVertical: 6, 
+    paddingHorizontal: 20, 
+    borderRadius: 15, 
+    marginBottom: 15 
+  },
+  dateText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#FFF',
+  },
+  imageContainer: { 
+    width: 250, 
+    height: 180, 
+    backgroundColor: '#EEE', 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    borderRadius: 15, 
+    overflow: 'hidden', 
+    marginBottom: 20 
+  },
+  imagePlaceholder: { 
+    fontSize: 16, 
+    color: '#999' 
+  },
+  image: { 
+    width: '100%', 
+    height: '100%', 
+    resizeMode: 'cover' 
+  },
+  input: {
+    width: '90%',
+    height: 100,
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 10,
+    backgroundColor: '#FFF',
+    fontSize: 16,
+    marginBottom: 20, 
+  },
+  saveButton: { 
+    width: '90%', 
+    height: 50, 
+    backgroundColor: '#F97316', 
+    borderRadius: 25, 
+    justifyContent: 'center', 
+    alignItems: 'center' 
+  },
+  saveButtonText: { 
+    color: 'white', 
+    fontWeight: 'bold', 
+    fontSize: 18 
+  },
 });
 
 export default DiaryEntryScreen;
