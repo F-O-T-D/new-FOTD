@@ -2,14 +2,18 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native';
+import { useUserState } from '../Contexts/UserContext';  // ✅ 유저 상태 import
+import axios from 'axios';
+import config from '../config';
 
 const DiaryEntryScreen = ({ route }) => {
-  const { date } = route.params || {};  // ✅ 기본값 설정
+  const { date } = route.params || {};  
   const navigation = useNavigation();
   const [foodImage, setFoodImage] = useState(null);
   const [content, setContent] = useState('');
+  const [user] = useUserState();  // ✅ 현재 로그인된 유저 가져오기
 
-  // ✅ 이미지 선택 함수 수정
+  // ✅ 이미지 선택 함수
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -18,8 +22,35 @@ const DiaryEntryScreen = ({ route }) => {
       quality: 1,
     });
 
-    if (!result.canceled) {  // ✅ 최신 버전에서는 `canceled`
-      setFoodImage(result.assets[0].uri);  // ✅ `assets[0].uri`로 접근
+    if (!result.canceled) {
+      setFoodImage(result.assets[0].uri);
+    }
+  };
+
+  // ✅ "저장하기" 버튼을 눌렀을 때 서버로 데이터 전송
+  const handleSave = async () => {
+    try {
+      if (!user?.user_id) {
+        console.warn("⚠️ user_id가 없음! 저장 불가");
+        return;
+      }
+
+      const newDiary = {
+        userId: user.user_id,  // ✅ 올바른 user_id 사용
+        date,
+        content,
+        image: foodImage || null,
+      };
+
+      console.log("🚀 저장 요청 데이터:", newDiary);
+
+      const response = await axios.post(`${config.API_BASE_URL}/api/diary/${user.user_id}/diary`, newDiary); // ✅ URL 수정 (diaries → diary)
+      console.log("✅ 저장 완료:", response.data);
+
+      // 저장 후 DiaryListScreen으로 이동
+      navigation.navigate("DiaryListScreen", { date });
+    } catch (error) {
+      console.error("❌ 저장 중 오류 발생:", error);
     }
   };
 
@@ -40,7 +71,7 @@ const DiaryEntryScreen = ({ route }) => {
         multiline
       />
 
-      <TouchableOpacity style={styles.saveButton} onPress={() => navigation.goBack()}>
+      <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
         <Text style={styles.saveButtonText}>저장하기</Text>
       </TouchableOpacity>
     </View>
