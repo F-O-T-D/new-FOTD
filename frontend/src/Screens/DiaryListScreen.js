@@ -23,13 +23,7 @@ const DiaryListScreen = ({ route }) => {
 
     console.log("👤 현재 로그인한 유저:", user); // ✅ 유저 데이터 로그 찍기
 
-     // ✅ 중복 실행 방지용 useRef 추가
-     const isFetched = useRef(false);
-     
     useEffect(() => {
-      if (isFetched.current) return; // ✅ 이미 실행된 경우 재실행 방지
-        isFetched.current = true; // ✅ 실행 기록 저장
-
       fetchDiaryEntries();
   }, [date]); // ✅ date 변경될 때마다 다시 fetch
   
@@ -107,7 +101,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    flexDirection: 'column', //이미지+텍스트 정렬
+    flexDirection: 'column', //이미지+텍스트
     alignItems: 'center',
     paddingHorizontal: 20, // ✅ 좌우 여백 추가
 },

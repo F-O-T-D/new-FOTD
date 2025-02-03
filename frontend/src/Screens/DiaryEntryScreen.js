@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Animated } from 'react-native';
 import { SafeAreaView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons'; 
 import { useUserState } from '../Contexts/UserContext';
 import axios from 'axios';
 import config from '../config';
@@ -12,6 +13,7 @@ const DiaryEntryScreen = ({ route }) => {
   const navigation = useNavigation();
   const [foodImage, setFoodImage] = useState(null);
   const [content, setContent] = useState('');
+  const scaleAnim = useRef(new Animated.Value(1)).current; // ✅ useRef 사용
   const [user] = useUserState();
 
   // ✅ 이미지 선택 함수
@@ -26,6 +28,20 @@ const DiaryEntryScreen = ({ route }) => {
     if (!result.canceled) {
       setFoodImage(result.assets[0].uri);
     }
+  };
+
+  const handlePressIn = () => {
+    Animated.spring(scaleAnim, {
+      toValue: 0.95,
+      useNativeDriver: true,
+    }).start();
+  };
+  
+  const handlePressOut = () => {
+    Animated.spring(scaleAnim, {
+      toValue: 1,
+      useNativeDriver: true,
+    }).start();
   };
 
   // ✅ "저장하기" 버튼을 눌렀을 때 서버로 데이터 전송
@@ -56,99 +72,162 @@ const DiaryEntryScreen = ({ route }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      {/* ✅ 날짜 표시 */}
-      <View style={styles.dateContainer}>
-        <Text style={styles.dateText}>{date}</Text>
-      </View>
+    <SafeAreaView style={styles.safeContainer}>
+      
+        <View style={styles.container}>
+        <View style={styles.header}>
+            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                <Ionicons name="chevron-back" size={28} color="#333" />
+            </TouchableOpacity>
 
-      {/* ✅ 이미지 선택 */}
-      <TouchableOpacity onPress={pickImage} style={styles.imageContainer}>
-        {foodImage ? (
-          <Image source={{ uri: foodImage }} style={styles.image} />
-        ) : (
-          <Text style={styles.imagePlaceholder}>📷 사진 추가</Text>
-        )}
-      </TouchableOpacity>
+            <Text style={styles.headerTitle}>일기 쓰기</Text>
 
-      {/* ✅ 입력 필드 */}
-      <TextInput
-        style={styles.input}
-        value={content}
-        onChangeText={setContent}
-        placeholder="음식 후기를 작성하세요"
-        multiline
-      />
+            <View style={{ width: 30 }} />
+        </View>
 
-      {/* ✅ 저장 버튼 */}
-      <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-        <Text style={styles.saveButtonText}>저장하기</Text>
-      </TouchableOpacity>
-      </SafeAreaView>
+        {/* 날짜 태그 */}
+        <View style={styles.dateTag}>
+            <Text style={styles.dateText}>{date}</Text>
+        </View>
+
+        {/* 사진 추가 */}
+        <TouchableOpacity onPress={pickImage} style={styles.imageContainer}>
+            {foodImage ? (
+                <Image source={{ uri: foodImage }} style={styles.image} />
+            ) : (
+                <Text style={styles.imagePlaceholder}>📷 사진 추가</Text>
+            )}
+        </TouchableOpacity>
+
+        {/* 텍스트 입력 */}
+        <TextInput
+            style={styles.input}
+            value={content}
+            onChangeText={setContent}
+            placeholder="음식 후기를 작성하세요"
+            multiline
+        />
+
+        {/* ✅ 저장 버튼 (애니메이션 추가) */}
+        <Animated.View style={[styles.saveButtonContainer, { transform: [{ scale: scaleAnim }] }]}>
+          <TouchableOpacity 
+            style={styles.saveButton} 
+            onPress={handleSave}
+            onPressIn={handlePressIn} 
+            onPressOut={handlePressOut}
+          >
+              <Text style={styles.saveButtonText}>저장하기</Text>
+          </TouchableOpacity>
+        </Animated.View>
+
+        </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFF5EC',
-    padding: 20,
-    alignItems: 'center',
-
+  safeContainer: {
+      flex: 1,
+      backgroundColor: '#FDF6EC',
   },
-  dateContainer: { 
-    backgroundColor: '#F97316', 
-    paddingVertical: 6, 
-    paddingHorizontal: 20, 
-    borderRadius: 15, 
-    marginBottom: 15 
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    backgroundColor: '#FDF6EC', // 배경과 자연스럽게 연결
+    borderBottomWidth: 0, // ✅ 경계선 제거로 깔끔한 느낌
+  },
+  headerTitle: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: '#333',
+    textAlign: "center",
+    flex: 1,
+  },
+  container: {
+      flex: 1,
+      paddingHorizontal: 24,
+      alignItems: 'center',
+  },
+  dateTag: {
+      backgroundColor: 'rgba(255, 140, 66, 0.85)', // ✅ 기존보다 부드러운 오렌지
+      paddingVertical: 8,
+      paddingHorizontal: 18,
+      borderRadius: 20,
+      marginTop: 20,
+      marginBottom: 20,
+      elevation: 3,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.15,
+      shadowRadius: 4,
   },
   dateText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#FFF',
+      fontSize: 16,
+      fontWeight: 'bold',
+      color: '#fff',
   },
-  imageContainer: { 
-    width: 250, 
-    height: 180, 
-    backgroundColor: '#EEE', 
-    justifyContent: 'center', 
-    alignItems: 'center', 
-    borderRadius: 15, 
-    overflow: 'hidden', 
-    marginBottom: 20 
+  imageContainer: {
+    width: '90%',
+    height: 200,
+    backgroundColor: '#F8F8F8', // ✅ 부드러운 그레이 배경
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 20,
+    marginBottom: 20,
+    borderWidth: 0.5,
+    borderColor: '#E0E0E0',
   },
-  imagePlaceholder: { 
-    fontSize: 16, 
-    color: '#999' 
+  image: {
+      width: '100%',
+      height: '100%',
+      borderRadius: 12,
   },
-  image: { 
-    width: '100%', 
-    height: '100%', 
-    resizeMode: 'cover' 
+  imagePlaceholder: {
+      fontSize: 16,
+      color: '#888',
   },
   input: {
     width: '90%',
-    height: 100,
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 10,
+    minHeight: 100,
+    borderWidth: 0.5,
+    borderColor: '#DDD',
+    borderRadius: 14,
+    padding: 15,
     backgroundColor: '#FFF',
     fontSize: 16,
-    marginBottom: 20, 
+    marginBottom: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
   },
-  saveButton: { 
-    width: '90%', 
-    height: 50, 
-    backgroundColor: '#F97316', 
-    borderRadius: 25, 
-    justifyContent: 'center', 
-    alignItems: 'center' 
+  saveButtonContainer: {
+    width: '90%', // ✅ 버튼과 동일한 크기 유지
+    height: 52,
+    justifyContent: 'center',
+    alignItems: 'center',
+},
+
+  saveButton: {
+    width: '90%',
+    height: 52,
+    backgroundColor: 'rgba(255, 140, 66, 0.85)',
+    borderRadius: 26,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
   },
-  saveButtonText: { 
-    color: 'white', 
-    fontWeight: 'bold', 
-    fontSize: 18 
+  saveButtonText: {
+      color: 'white',
+      fontSize: 18,
+      fontWeight: 'bold',
   },
 });
 
