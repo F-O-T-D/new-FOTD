@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';  // ✅ useState, useEffect 추가!
 import { View, Text, Button, StyleSheet, FlatList, Image } from 'react-native';
+import { SafeAreaView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import { useUserState } from '../Contexts/UserContext';  // ✅ 유저 상태 가져오기
@@ -47,35 +48,80 @@ const DiaryListScreen = ({ route }) => {
     };
   
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
           <Text style={styles.header}>📖 {date}의 음식 일기 목록</Text>
+    
           {diaryEntries.length === 0 ? (
-              <Text>📌 저장된 일기가 없습니다.</Text>
+              <Text style={styles.emptyMessage}>📌 저장된 일기가 없습니다.</Text>
           ) : (
-            console.log("📌 화면에 렌더링할 데이터:", diaryEntries), // ✅ 데이터 확인 추가
               <FlatList
                   data={diaryEntries}
-                  extraData={diaryEntries} // ✅ state 변경 감지
+                  extraData={diaryEntries} // ✅ 상태 변경 감지
                   keyExtractor={(item) => item.id.toString()}
                   renderItem={({ item }) => (
                       <View style={styles.diaryItem}>
-                          <Text>{item.content}</Text>
                           {item.image && <Image source={{ uri: item.image }} style={styles.image} />}
+                          <Text style={styles.diaryContent}>{item.content}</Text>
                       </View>
                   )}
+                  ItemSeparatorComponent={() => <View style={styles.separator} />} // ✅ 항목 간격 추가
               />
           )}
+    
           <Button title="새 일기 작성" onPress={() => navigation.navigate('DiaryEntryScreen', { date })} />
-      </View>
+        </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    backgroundColor: '#FFF5EC', // ✅ 배경색 추가
+    padding: 20,
     alignItems: 'center',
   },
+  header: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#F97316',
+    marginBottom: 10,
+    marginTop: 20,  
+},
+  emptyMessage: {
+    fontSize: 16,
+    color: '#999',
+    marginTop: 20,
+  },
+  diaryItem: {
+    width: '100%',  // ✅ 부모 요소와 동일한 너비
+    padding: 15,
+    backgroundColor: '#FFF',
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    flexDirection: 'column', //이미지+텍스트 정렬
+    alignItems: 'center',
+    paddingHorizontal: 20, // ✅ 좌우 여백 추가
+},
+  diaryContent: {
+    fontSize: 16,
+    color: '#333',
+    textAlign: 'center',
+    marginTop: 10,
+  },
+  image: {
+    width: '100%',
+    height: undefined,  // ✅ 고정 높이 제거
+    aspectRatio: 1.5,   // ✅ 가로/세로 비율 유지 (1.5:1)
+    borderRadius: 10,
+    resizeMode: 'cover', // ✅ 이미지 비율 유지
+},
+  separator: {
+    height: 15, // ✅ 아이템 간격 추가
+  },
 });
+
 
 export default DiaryListScreen;
