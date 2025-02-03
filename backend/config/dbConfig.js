@@ -1,35 +1,22 @@
 require('dotenv').config();
-const mysql = require('mysql');
-const sql = require('../sql/sql.js');
+const { Sequelize } = require('sequelize');
 
-const pool = mysql.createPool({
-  connectionLimit: process.env.MYSQL_LIMIT,
-  host: process.env.MYSQL_HOST,
-  port: process.env.MYSQL_PORT,
-  user: process.env.MYSQL_USERNAME,
-  password: process.env.MYSQL_PASSWORD,
-  database: process.env.MYSQL_DB,
-});
+const sequelize = new Sequelize(
+  process.env.MYSQL_DB, 
+  process.env.MYSQL_USERNAME, 
+  process.env.MYSQL_PASSWORD, 
+  {
+    host: process.env.MYSQL_HOST, 
+    port: process.env.MYSQL_PORT, 
+    dialect: 'mysql', 
+    logging: console.log, // ✅ SQL 쿼리 로그 확인 가능
+    pool: {
+      max: 10, // ✅ 최대 10개 연결 유지
+      min: 0,
+      acquire: 30000,
+      idle: 10000
+    }
+  }
+);
 
-const query = async (alias, values) => {
-  return new Promise((resolve, reject) =>
-    pool.query(sql[alias], values, (error, results) => {
-      if (error) reject(error);
-      else resolve(results);
-    })
-  );
-};
-
-
-console.log('DB Config:', {
-  host: process.env.MYSQL_HOST,
-  port: process.env.MYSQL_PORT,
-  user: process.env.MYSQL_USERNAME,
-  password: process.env.MYSQL_PASSWORD,
-  database: process.env.MYSQL_DB,
-  limit: process.env.MYSQL_LIMIT,
-});
-
-
-
-module.exports = { query };
+module.exports = sequelize;  // ✅ Sequelize 인스턴스 내보내기

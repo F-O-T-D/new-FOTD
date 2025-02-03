@@ -4,6 +4,7 @@ const Sequelize = require('sequelize');
 const dbConfig = require('../config/dbConfig');
 const User = require('./user'); // user 모델 가져오기
 const Map = require('./map'); // map 모델 가져오기
+const Diary = require('./diary'); // Diary 모델 가져오기
 
 // .env 파일의 환경변수 사용
 const sequelize = new Sequelize(
@@ -29,13 +30,17 @@ const db = {};
 db.sequelize = sequelize;
 db.User = User;
 db.Map = Map;
+db.Diary = Diary;
 
 // 모델 초기화
 User.init(sequelize);
 Map.init(sequelize);
+Diary.init(sequelize);
 
-// 모델 간 관계 정의
-User.associate(db);
-Map.associate(db);
+// ✅ 모델 간 관계 정의 (associate 함수가 있는 경우만 실행)
+if (typeof User.associate === 'function') User.associate(db);
+if (typeof Map.associate === 'function') Map.associate(db);
+if (typeof Diary.associate === 'function') Diary.associate(db);
+
 
 module.exports = db;

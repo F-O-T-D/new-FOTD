@@ -7,7 +7,7 @@ require('./config/dbConfig');
 
 const userRoutes = require('./routes/userRoutes'); // 사용자 관련 라우트
 const mapRoutes = require('./routes/mapRoutes');   // 지도 관련 라우트
-
+const diaryRoutes = require('./routes/diaryRoutes');
 const app = express();
 
 // ✅ 미들웨어 설정
@@ -21,6 +21,7 @@ app.use(express.json());
 // ✅ 라우트 설정
 app.use('/api/user', userRoutes);
 app.use('/api/map', mapRoutes);
+app.use('/api/diary', diaryRoutes);
 
 // ✅ 없는 라우트 처리
 app.use((req, res, next) => {

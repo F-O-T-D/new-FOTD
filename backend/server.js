@@ -11,6 +11,14 @@ sequelize.sync({ force: false })
     .catch((error) => {
         console.error('❌ 데이터베이스 연결 실패:', error);
     });
+    // ✅ 등록된 라우트 출력 (디버깅용)
+app._router.stack.forEach((r) => {
+    if (r.route && r.route.path) {
+        console.log(`🛠️ 등록된 라우트: ${r.route.path} [${Object.keys(r.route.methods).join(', ').toUpperCase()}]`);
+    }
+  });
+
+  
 
 // ✅ 서버 시작
 app.listen(PORT, "0.0.0.0", () => {  
@@ -18,9 +26,3 @@ app.listen(PORT, "0.0.0.0", () => {
     console.log(`🌐 http://localhost:${PORT}`);
 });
 
-// ✅ 등록된 라우트 출력 (디버깅용)
-app._router.stack.forEach((r) => {
-  if (r.route && r.route.path) {
-      console.log(`🛠️ 등록된 라우트: ${r.route.path} [${Object.keys(r.route.methods).join(', ').toUpperCase()}]`);
-  }
-});
