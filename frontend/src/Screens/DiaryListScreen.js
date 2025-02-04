@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';  // ✅ useState, useEffect 추가!
-import { View, Text, Button, StyleSheet, FlatList, Image } from 'react-native';
+import { View, Text, Button,TouchableOpacity, StyleSheet, FlatList, Image } from 'react-native';
 import { SafeAreaView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import { useUserState } from '../Contexts/UserContext';  // ✅ 유저 상태 가져오기
+import { Ionicons } from '@expo/vector-icons'; // ✅ 아이콘 추가
 import config from '../config';
 
 const DiaryListScreen = ({ route }) => {
@@ -49,7 +50,11 @@ const DiaryListScreen = ({ route }) => {
   
     return (
       <SafeAreaView style={styles.container}>
-          <Text style={styles.header}>📖 {date}의 음식 일기 목록</Text>
+          {/* 📅 날짜 띄우는 부분 */}
+      <View style={styles.dateFloating}>
+        <Ionicons name="calendar" size={20} color="#FF8C42" />
+        <Text style={styles.dateText}>{date}의 음식 일기</Text>
+      </View>
     
           {diaryEntries.length === 0 ? (
               <Text style={styles.emptyMessage}>📌 저장된 일기가 없습니다.</Text>
@@ -65,28 +70,56 @@ const DiaryListScreen = ({ route }) => {
                       </View>
                   )}
                   ItemSeparatorComponent={() => <View style={styles.separator} />} // ✅ 항목 간격 추가
+                  contentContainerStyle={{ paddingBottom: 20 }} // ✅ 하단 여백 추가하여 버튼 가리지 않기
+
               />
           )}
     
-          <Button title="새 일기 작성" onPress={() => navigation.navigate('DiaryEntryScreen', { date })} />
-        </SafeAreaView>
+           {/* 새 일기 작성 버튼 */}
+           <TouchableOpacity 
+        style={styles.fabButton} 
+        onPress={() => navigation.navigate('DiaryEntryScreen', { date })}
+      >
+        <Ionicons name="add" size={32} color="white" />
+      </TouchableOpacity>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF5EC', // ✅ 배경색 추가
-    padding: 20,
+    backgroundColor: '#FDF6EC',
+    paddingHorizontal: 20,
     alignItems: 'center',
   },
-  header: {
-    fontSize: 22,
+  safeContainer: {
+    flex: 1,
+    backgroundColor: '#FDF6EC',  // ✅ 전체 배경 살구색으로 통일
+    paddingHorizontal: 20,
+    alignItems: 'center',
+  },
+  dateFloating: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',  // ✅ 살짝 투명한 효과
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 5,
+    elevation: 5,
+    marginTop: 10,
+    marginBottom: 15,
+  },
+  dateText: {
+    fontSize: 16,
     fontWeight: 'bold',
-    color: '#F97316',
-    marginBottom: 10,
-    marginTop: 20,  
-},
+    color: '#FF8C42',
+    marginLeft: 5,  // 아이콘과 간격
+  },
   emptyMessage: {
     fontSize: 16,
     color: '#999',
@@ -120,6 +153,26 @@ const styles = StyleSheet.create({
 },
   separator: {
     height: 15, // ✅ 아이템 간격 추가
+  },
+  fabButton: {
+    width: 60,
+    height: 60,
+    backgroundColor: 'rgba(255, 140, 66, 0.85)',
+    borderRadius: 30,
+    position: 'absolute',
+    bottom: 30,
+    right: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+  },
+  addButtonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });
 
