@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 10,
     paddingHorizontal: 15,
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',  // ✅ 살짝 투명한 효과
+    backgroundColor: 'rgba(255, 255, 255, 0.91)',  // ✅ 살짝 투명한 효과
     borderRadius: 20,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
