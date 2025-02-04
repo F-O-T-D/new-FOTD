@@ -5,7 +5,8 @@
 InputFAB 버튼을 눌러 MapScreen.js로 이동.
 */
 
-import { TextInput, View } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import { BACKCARROT, GRAY } from '../Colors';
 import EmptyList from '../Components/EmptyList';
 import List from '../Components/List';
@@ -13,7 +14,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import InputFAB from '../Components/InputFAB';
 import { useNavigation } from '@react-navigation/native';
 import { MapRoutes } from '../Navigations/Routes';
-import React, { useState, useEffect } from 'react';
+import { Ionicons } from '@expo/vector-icons';
 import { useUserState } from '../Contexts/UserContext';
 import { useFocusEffect } from '@react-navigation/native';
 import { useIsFocused } from '@react-navigation/native';
@@ -25,6 +26,8 @@ const ListScreen = () => {
   const { bottom } = useSafeAreaInsets();
   const navigation = useNavigation();
   const [restauList, setRestauList] = useState([]);
+  const [filteredRestauList, setFilteredRestauList] = useState([]); // 필터링된 가게 목록 상태 추가
+  const [searchQuery, setSearchQuery] = useState('');
   const [user, setUser] = useUserState();
   const isFocused = useIsFocused();
 
@@ -35,10 +38,25 @@ const ListScreen = () => {
       const data = await response.json();
       console.log('Fetched data:', data); // 'data' 객체 콘솔에 출력
       setRestauList(data); // 가게 정보를 state에 저장
+      setFilteredRestauList(data); // 검색어 필터링을 위한 초기값 설정
     } catch (error) {
       console.error('가게 정보를 불러오는데 오류 발생:', error);
     }
   };
+
+  // ✅ 검색 기능
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    if (query.trim() === '') {
+      setFilteredRestauList(restauList);
+    } else {
+      const filtered = restauList.filter((item) =>
+        item.name.toLowerCase().includes(query.toLowerCase())
+      );
+      setFilteredRestauList(filtered);
+    }
+  };
+
 
   //특정 가게 삭제, 삭제후 최신 목록 다시 가져옴
   const handleDeleteItem = async (deletedItemId) => {
@@ -90,17 +108,93 @@ const ListScreen = () => {
   );
 
   return (
-    <View
-      style={{ flex: 1, paddingBottom: bottom, backgroundColor: BACKCARROT }}
-    >
-      {restauList.length ? <List data={restauList} onDeleteItem={handleDeleteItem} /> : <EmptyList />}
-      <InputFAB onSubmit={() => {
-        console.log("✅ InputFAB 버튼 클릭됨!");
-        buttonPress();
-        }} />    
+    <View style={styles.container}>
+      {/* 🏡 화면 제목 */}
+      <View style={styles.header}>
+        <Ionicons name="storefront-outline" size={26} color="#F97316" />
+        <Text style={styles.headerTitle}>나의 가게 리스트</Text>
       </View>
+
+      {/* 📌 가게 목록 or 비어있을 때 메시지 */}
+      {restauList.length ? (
+        <List data={restauList} onDeleteItem={handleDeleteItem} />
+      ) : (
+        <View style={styles.emptyContainer}>
+          <Ionicons name="restaurant-outline" size={50} color="#D3D3D3" />
+          <Text style={styles.emptyMessage}>아직 등록된 가게가 없어요!</Text>
+          <Text style={styles.emptySubText}>오른쪽 아래 버튼을 눌러 가게를 추가해보세요.</Text>
+        </View>
+      )}
+
+      {/* ✨ 둥근 FAB 버튼 */}
+      <TouchableOpacity style={styles.fabButton} onPress={buttonPress}>
+        <Ionicons name="add" size={34} color="white" />
+      </TouchableOpacity>
+    </View>
   );
 };
+
+// ✅ 스타일 수정 (더 귀엽고 감성적인 UI)
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#FFF5EC', // ✅ 부드러운 크림톤 배경
+    paddingBottom: 20,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 15,
+    backgroundColor: 'rgba(255, 255, 255, 0.95)', // ✅ 살짝 투명한 효과
+    borderRadius: 15,
+    marginHorizontal: 15,
+    marginTop: 60,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#F97316',
+    marginLeft: 10,
+  },
+  emptyContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: -50, // ✅ 아이콘을 중앙에 위치
+  },
+  emptyMessage: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#888',
+    marginTop: 10,
+  },
+  emptySubText: {
+    fontSize: 14,
+    color: '#aaa',
+    marginTop: 5,
+  },
+  fabButton: {
+    position: 'absolute',
+    bottom: 30,
+    right: 20,
+    width: 65,
+    height: 65,
+    backgroundColor: '#FF8C42',
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+  },
+});
 // 버튼에서 위도 경도 전달해 주면 된다..
 export default ListScreen;
 
