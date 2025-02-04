@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Animated } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Animated, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { SafeAreaView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native';
@@ -46,6 +46,7 @@ const DiaryEntryScreen = ({ route }) => {
 
   // ✅ "저장하기" 버튼을 눌렀을 때 서버로 데이터 전송
   const handleSave = async () => {
+    Keyboard.dismiss();  // ✅ 키보드 먼저 닫기
     try {
       if (!user?.user_id) {
         console.warn("⚠️ user_id가 없음! 저장 불가");
@@ -72,6 +73,7 @@ const DiaryEntryScreen = ({ route }) => {
   };
 
   return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
     <SafeAreaView style={styles.safeContainer}>
       
         <View style={styles.container}>
@@ -122,6 +124,7 @@ const DiaryEntryScreen = ({ route }) => {
 
         </View>
     </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 };
 
