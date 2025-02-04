@@ -35,6 +35,8 @@ const ContentTab = () => {
           tabBarIcon: (props) => getTabBarIcon({ ...props, name: 'calendar' }),
           headerStyle: { backgroundColor: BACKCARROT },
           headerTintColor: PRIMARY.DEFAULT,
+          headerShown: false,  // ✅ 캘린더 헤더를 완전히 숨김
+
         }}
       />
 
