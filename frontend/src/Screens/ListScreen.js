@@ -115,6 +115,17 @@ const ListScreen = () => {
         <Text style={styles.headerTitle}>나의 가게 리스트</Text>
       </View>
 
+{/* 🔍 검색 입력 */}
+<View style={styles.searchBar}>
+        <Ionicons name="search" size={20} color="#888" />
+        <TextInput
+          style={styles.searchInput}
+          placeholder="가게 이름 검색"
+          value={searchQuery}
+          onChangeText={handleSearch} // ✅ 검색어 입력 이벤트 적용
+        />
+      </View>
+
       {/* 📌 가게 목록 or 비어있을 때 메시지 */}
       {restauList.length ? (
         <List data={restauList} onDeleteItem={handleDeleteItem} />
@@ -161,6 +172,27 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#F97316',
     marginLeft: 10,
+  },
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFF',
+    paddingHorizontal: 15,
+    borderRadius: 10,
+    height: 45,
+    marginHorizontal: 20,
+    marginTop: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 16,
+    marginLeft: 10,
+    color: '#333',
   },
   emptyContainer: {
     flex: 1,
