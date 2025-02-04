@@ -18,6 +18,7 @@ const MapNavigation = () => {
           headerShown: true,
           headerStyle: { backgroundColor: BACKCARROT },
           headerTintColor: PRIMARY.DEFAULT,
+          headerShown: false,
         }}
       />
       <Stack.Screen

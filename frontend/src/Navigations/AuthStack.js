@@ -12,6 +12,7 @@ const AuthStack = () => {
       screenOptions={{
         contentStyle: { backgroundColor: WHITE },
         headerShown: false, 
+        
       }}
     >
       <Stack.Screen name={AuthRoutes.SIGN_IN} component={SignInScreen} />
