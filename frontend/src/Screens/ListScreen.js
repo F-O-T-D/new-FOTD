@@ -145,30 +145,29 @@ const ListScreen = () => {
   );
 };
 
-// ✅ 스타일 수정 (더 귀엽고 감성적인 UI)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF5EC', // ✅ 부드러운 크림톤 배경
+    backgroundColor: '#FFF9F3', // ✅ 좀 더 따뜻한 크림톤 배경
     paddingBottom: 20,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 15,
-    backgroundColor: 'rgba(255, 255, 255, 0.95)', // ✅ 살짝 투명한 효과
+    paddingVertical: 12,
+    backgroundColor: '#FFFFFF',
     borderRadius: 15,
-    marginHorizontal: 15,
+    marginHorizontal: 20,
     marginTop: 60,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.08,
     shadowRadius: 4,
-    elevation: 3,
+    elevation: 2,
   },
   headerTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#F97316',
     marginLeft: 10,
@@ -179,14 +178,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     paddingHorizontal: 15,
     borderRadius: 10,
-    height: 45,
+    height: 50,
     marginHorizontal: 20,
-    marginTop: 10,
+    marginTop: 12,
+    marginBottom: 12,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 1,
   },
   searchInput: {
     flex: 1,
@@ -198,27 +198,26 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: -50, // ✅ 아이콘을 중앙에 위치
   },
   emptyMessage: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#888',
+    color: '#999',
     marginTop: 10,
   },
   emptySubText: {
     fontSize: 14,
-    color: '#aaa',
+    color: '#bbb',
     marginTop: 5,
   },
   fabButton: {
     position: 'absolute',
     bottom: 30,
     right: 20,
-    width: 65,
-    height: 65,
+    width: 70,
+    height: 70,
     backgroundColor: '#FF8C42',
-    borderRadius: 50,
+    borderRadius: 35,
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000',
