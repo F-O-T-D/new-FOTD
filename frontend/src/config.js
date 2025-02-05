@@ -10,5 +10,6 @@ export const API_BASE_URL = Constants.manifest?.debuggerHost
 
 console.log("🛠️ API_BASE_URL 설정됨:", API_BASE_URL); // 설정된 API 주소 확인
 
+
 // 최종 설정 내보내기
 export default { API_BASE_URL, KAKAO_REST_API_KEY, KAKAO_JAVASCRIPT_KEY };

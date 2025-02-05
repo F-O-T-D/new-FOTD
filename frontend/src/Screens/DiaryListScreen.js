@@ -56,7 +56,7 @@ const DiaryListScreen = ({ route }) => {
         <Text style={styles.dateText}>{date}의 음식 일기</Text>
       </View>
           {diaryEntries.length === 0 ? (
-              <Text style={styles.emptyMessage}>📌 저장된 일기가 없습니다.</Text>
+              <Text style={styles.emptyMessage}>🍽️ 아직 기록이 없어요!</Text>
           ) : (
               <FlatList
                   data={diaryEntries}
@@ -70,16 +70,16 @@ const DiaryListScreen = ({ route }) => {
                       </View>
                   )}
                   ItemSeparatorComponent={() => <View style={styles.separator} />} // ✅ 항목 간격 추가
-                  contentContainerStyle={{ paddingBottom: 20 }} // ✅ 하단 여백 추가하여 버튼 가리지 않기
+                  contentContainerStyle={{ paddingBottom: 30 }} // ✅ 하단 여백 추가하여 버튼 가리지 않기
 
               />
           )}
     
            {/* 새 일기 작성 버튼 */}
            <TouchableOpacity 
-        style={styles.fabButton} 
-        onPress={() => navigation.navigate('DiaryEntryScreen', { date })}
-      >
+             style={styles.fabButton} 
+             onPress={() => navigation.navigate('DiaryEntryScreen', { date })}
+          >
         <Ionicons name="add" size={32} color="white" />
       </TouchableOpacity>
     </SafeAreaView>
@@ -90,20 +90,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FDF6EC',
-    paddingHorizontal: 20,
-    alignItems: 'center',
-  },
-  safeContainer: {
-    flex: 1,
-    backgroundColor: '#FDF6EC',  // ✅ 전체 배경 살구색으로 통일
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     alignItems: 'center',
   },
   dateFloating: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 15,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
     backgroundColor: 'rgba(255, 255, 255, 0.91)',  // ✅ 살짝 투명한 효과
     borderRadius: 20,
     shadowColor: '#000',
@@ -127,9 +121,10 @@ const styles = StyleSheet.create({
   },
   diaryItem: {
     width: '100%',  // ✅ 부모 요소와 동일한 너비
+    flexDirection: 'row',
     padding: 15,
     backgroundColor: '#FFF',
-    borderRadius: 10,
+    borderRadius: 12,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -138,16 +133,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20, // ✅ 좌우 여백 추가
 },
-  diaryContent: {
-    fontSize: 16,
-    color: '#333',
-    textAlign: 'center',
-    marginTop: 10,
-  },
+diaryTitle: {
+  fontSize: 18,
+  fontWeight: 'bold',
+  color: '#000000',  // ✨ 오렌지 계열 포인트 컬러
+  textAlign: 'center',
+  marginBottom: 15,
+  fontFamily: 'System', // 기본 폰트 사용 가능
+},
+diaryContent: {
+  fontSize: 16,
+  color: '#555',
+  textAlign: 'center',
+  lineHeight: 22,
+  marginTop: 15,
+},
   image: {
     width: '100%',
     height: undefined,  // ✅ 고정 높이 제거
-    aspectRatio: 1.5,   // ✅ 가로/세로 비율 유지 (1.5:1)
+    aspectRatio: 1,   // ✅ 가로/세로 비율 유지 (1.5:1)
     borderRadius: 10,
     resizeMode: 'cover', // ✅ 이미지 비율 유지
 },
