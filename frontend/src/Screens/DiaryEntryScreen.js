@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
       color: '#fff',
   },
   titleInput: {  // ✅ 제목 입력 스타일
-    width: '90%',
+    width: '100%',
     height: 50,
     borderWidth: 0.5,
     borderColor: '#DDD',
@@ -195,8 +195,8 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   imageContainer: {
-    width: '90%',
-    height: 200,
+    width: '100%',
+    height: 300,
     backgroundColor: '#F8F8F8', // ✅ 부드러운 그레이 배경
     justifyContent: 'center',
     alignItems: 'center',
@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
       color: '#888',
   },
   input: {
-    width: '90%',
+    width: '100%',
     minHeight: 100,
     borderWidth: 0.5,
     borderColor: '#DDD',
