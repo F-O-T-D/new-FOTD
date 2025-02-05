@@ -16,8 +16,7 @@ module.exports = {
         references: {
           model: {
             tableName: 'user_table',
-            schema: 'FOTD_user',
-          },
+                    },
           key: 'user_id',
         },
         onUpdate: 'CASCADE',

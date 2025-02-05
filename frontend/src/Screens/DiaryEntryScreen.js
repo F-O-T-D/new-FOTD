@@ -12,6 +12,7 @@ const DiaryEntryScreen = ({ route }) => {
   const { date } = route.params || {};  
   const navigation = useNavigation();
   const [foodImage, setFoodImage] = useState(null);
+  const [title, setTitle] = useState(''); // 제목 추가
   const [content, setContent] = useState('');
   const scaleAnim = useRef(new Animated.Value(1)).current; // ✅ useRef 사용
   const [user] = useUserState();
@@ -56,6 +57,7 @@ const DiaryEntryScreen = ({ route }) => {
       const newDiary = {
         userId: user.user_id,
         date,
+        title,
         content,
         image: foodImage || null,
       };
@@ -91,6 +93,14 @@ const DiaryEntryScreen = ({ route }) => {
         <View style={styles.dateTag}>
             <Text style={styles.dateText}>{date}</Text>
         </View>
+
+        {/* ✅ 제목 입력란 추가 */}
+        <TextInput
+            style={styles.titleInput}
+            value={title}
+            onChangeText={setTitle}
+            placeholder="제목을 입력하세요"
+          />
 
         {/* 사진 추가 */}
         <TouchableOpacity onPress={pickImage} style={styles.imageContainer}>
@@ -171,6 +181,18 @@ const styles = StyleSheet.create({
       fontSize: 16,
       fontWeight: 'bold',
       color: '#fff',
+  },
+  titleInput: {  // ✅ 제목 입력 스타일
+    width: '90%',
+    height: 50,
+    borderWidth: 0.5,
+    borderColor: '#DDD',
+    borderRadius: 14,
+    paddingHorizontal: 15,
+    backgroundColor: '#FFF',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 15,
   },
   imageContainer: {
     width: '90%',

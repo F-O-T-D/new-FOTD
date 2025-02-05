@@ -12,10 +12,11 @@ const diaryService = {  // ✅ 기존에 `diaryService`가 아니라 `DiaryServi
     },
 
     // ✅ 일기 추가
-    async addDiary(userId, date, content, image) {
+    async addDiary(userId, date, title, content, image) {
         return await Diary.create({
             userId,
             date,
+            title,
             content,
             image, // 이미지 URL 저장 가능
         });
