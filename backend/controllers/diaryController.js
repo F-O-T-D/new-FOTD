@@ -33,8 +33,8 @@ const diaryController = {
     async addDiary(req, res) {
         try {
             const { userId } = req.params;
-            const { date, content, image } = req.body;
-            const newDiary = await diaryService.addDiary(userId, date, content, image);
+            const { date, title, content, image } = req.body;
+            const newDiary = await diaryService.addDiary(userId, date, title, content, image);
             res.status(201).json(newDiary);
         } catch (error) {
             console.error('📌 addDiary 오류:', error);

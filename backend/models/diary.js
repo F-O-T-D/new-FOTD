@@ -14,6 +14,10 @@ class Diary extends Model {
                     type: DataTypes.STRING,
                     allowNull: false,
                 },
+                title: { // ✅ 제목 추가
+                    type: DataTypes.STRING,
+                    allowNull: false,
+                },
                 content: {
                     type: DataTypes.TEXT,
                     allowNull: false,

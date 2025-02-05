@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';  // ✅ useState, useEffect 추가!
-import { View, Text, Button,TouchableOpacity, StyleSheet, FlatList, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, FlatList, Image } from 'react-native';
 import { SafeAreaView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
@@ -55,7 +55,6 @@ const DiaryListScreen = ({ route }) => {
         <Ionicons name="calendar" size={20} color="#FF8C42" />
         <Text style={styles.dateText}>{date}의 음식 일기</Text>
       </View>
-    
           {diaryEntries.length === 0 ? (
               <Text style={styles.emptyMessage}>📌 저장된 일기가 없습니다.</Text>
           ) : (
@@ -65,7 +64,8 @@ const DiaryListScreen = ({ route }) => {
                   keyExtractor={(item) => item.id.toString()}
                   renderItem={({ item }) => (
                       <View style={styles.diaryItem}>
-                          {item.image && <Image source={{ uri: item.image }} style={styles.image} />}
+                            <Text style={styles.diaryTitle}>{item.title ? String(item.title) : "제목 없음"}</Text>
+                            {item.image && <Image source={{ uri: item.image }} style={styles.image} />}
                           <Text style={styles.diaryContent}>{item.content}</Text>
                       </View>
                   )}
