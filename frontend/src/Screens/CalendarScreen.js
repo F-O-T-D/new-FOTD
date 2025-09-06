@@ -9,21 +9,25 @@ const CalendarScreen = () => {
   const navigation = useNavigation();
 
 
-
+  // 날짜를 누르면 실행되는 함수
   const handleDayPress = (day) => {
+
+    //선택된 날짜를 상태에 저장(화면에 선택표시를 하기 위해)
     setSelectedDate(day.dateString);
+
+    //'DiaryListScreen'으로 이동하면서 날짜 정보 파라미터로 전달, 'DiaryListScreen'에서 해당 날짜의 일기를 불러오게 됨
     navigation.navigate('Diary', { screen: 'DiaryListScreen', params: { date: day.dateString } });  
 };
 
   return (
     <View style={styles.container}>
-      {/* 📅 상단 안내 문구 */}
+      {/* 상단 안내 문구 */}
       <View style={styles.header}>
         <Ionicons name="calendar-outline" size={24} color="#F97316" />
         <Text style={styles.title}>날짜를 선택해 주세요!</Text>
       </View>
       
-       {/* 📅 캘린더 */}
+       {/* 캘린더 */}
       <View style={styles.calendarWrapper}>
         <Calendar
           onDayPress={handleDayPress}
@@ -47,17 +51,7 @@ const CalendarScreen = () => {
           }}
         />
       </View>
-
-      {/* ✅ 버튼 */}
-      <TouchableOpacity 
-        style={[styles.button, !selectedDate && styles.buttonDisabled]} 
-        onPress={() => navigation.navigate('DiaryListScreen', { date: selectedDate })}
-        disabled={!selectedDate}
-      >
-        <Text style={styles.buttonText}>
-          {selectedDate ? `선택하기` : '날짜를 선택하세요'}
-        </Text>
-      </TouchableOpacity>
+      {/* '선택하기' 버튼을 제거하여 UI를 간소화하고 UX를 개선함. */}
     </View>
   );
 };
@@ -104,27 +98,7 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 3,
   },
-  button: { 
-    width: 327, 
-    height: 50, 
-    backgroundColor: '#FF8C42', 
-    borderRadius: 30, 
-    justifyContent: 'center', 
-    alignItems: 'center', 
-    marginTop: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.15,
-    shadowRadius: 5,
-  },
-  buttonDisabled: {
-    backgroundColor: '#D3D3D3',
-  },
-  buttonText: { 
-    color: 'white', 
-    fontWeight: 'bold', 
-    fontSize: 16 
-  },
+    // 버튼 관련 스타일(button, buttonDisabled, buttonText)은 더 이상 필요 없으므로 삭제했습니다.
 });
 
 export default CalendarScreen;
