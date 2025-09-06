@@ -24,7 +24,7 @@
       "web": {
         "favicon": "./src/assets/favicon.png"
       },
-      "jsEngine": "jsc",
+      "jsEngine": "hermes",
       "doctor": {
         "reactNativeDirectoryCheck": {
           "listUnknownPackages": false

@@ -1,25 +1,17 @@
-// import 'react-native-gesture-handler';
-// import 'react-native-reanimated';
-// import { AppRegistry } from 'react-native';
-// import { registerRootComponent } from 'expo';
-// import { unstable_enableLogBox } from "react-native";
-// import App from './src/App'; // src 폴더 내 App.js 경로
-// import { name as appName } from './app.json'; // app.json에서 "main" 가져오기
+/**
+ * [앱 진입점 (Entry Point)]
+ * 이 파일은 우리 앱이 시작될 때 가장 먼저 실행되는 파일입니다.
+ * React Native 앱은 네이티브(iOS/Android) 환경에서 시작된 후,
+ * 이 파일을 통해 우리가 작성한 자바스크립트 코드를 불러옵니다.
+ */
 
-// if (typeof global.setImmediate === 'undefined') {
-//     global.setImmediate = (fn, ...args) => setTimeout(fn, 0, ...args);
-// }
-
-// console.log('App name from app.json:', appName); // 이름 확인
-
-// unstable_enableLogBox(); // React Native의 LogBox 오류 디버깅 활성화
-// global.__RCTProfileIsProfiling = false; // Bridgeless Mode 비활성화
-
-// // ✅ Expo 환경에서 더 안정적인 방식
-// registerRootComponent(App);
+import 'react-native-gesture-handler'; //제스처 핸들러 라이브러리, 반드시 최상단에 위치
+import 'react-native-reanimated'; //애니메이션을 구현하기 위한 라이브러리 임포트
+import { registerRootComponent } from 'expo'; // Expo의 루트 컴포넌트 등록 함수 임포트
+import App from './src/App'; // 앱의 메인 컴포넌트 임포트
 
 
-import 'react-native-gesture-handler';
-import { registerRootComponent } from 'expo';
-import App from './src/App';
+// 앱 실행
 registerRootComponent(App);
+
+
