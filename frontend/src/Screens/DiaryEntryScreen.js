@@ -1,9 +1,8 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Animated, Keyboard, TouchableWithoutFeedback } from 'react-native';
-import { SafeAreaView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Animated, Keyboard, TouchableWithoutFeedback, KeyboardAvoidingView, ScrollView, Platform, SafeAreaView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons'; 
+import { Ionicons } from '@expo/vector-icons';
 import { useUserState } from '../Contexts/UserContext';
 import axios from 'axios';
 import config from '../config';
@@ -14,10 +13,11 @@ const DiaryEntryScreen = ({ route }) => {
   const [foodImage, setFoodImage] = useState(null);
   const [title, setTitle] = useState(''); // 제목 추가
   const [content, setContent] = useState('');
-  const scaleAnim = useRef(new Animated.Value(1)).current; // ✅ useRef 사용
+  const scaleAnim = useRef(new Animated.Value(1)).current;
   const [user] = useUserState();
+  const scrollRef = useRef(null); //ScrollView를 제어하기 위한 ref
 
-  // ✅ 이미지 선택 함수
+  // 이미지 선택 함수
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -45,12 +45,12 @@ const DiaryEntryScreen = ({ route }) => {
     }).start();
   };
 
-  // ✅ "저장하기" 버튼을 눌렀을 때 서버로 데이터 전송
+  // "저장하기" 버튼을 눌렀을 때 서버로 데이터 전송
   const handleSave = async () => {
     Keyboard.dismiss();  // ✅ 키보드 먼저 닫기
     try {
       if (!user?.user_id) {
-        console.warn("⚠️ user_id가 없음! 저장 불가");
+        console.warn("user_id가 없음! 저장 불가");
         return;
       }
 
@@ -61,80 +61,93 @@ const DiaryEntryScreen = ({ route }) => {
         content,
         image: foodImage || null,
       };
-
-      console.log("🚀 저장 요청 데이터:", newDiary);
-
+      console.log("저장 요청 데이터:", newDiary);
       const response = await axios.post(`${config.API_BASE_URL}/api/diary/${user.user_id}/diary`, newDiary);
-      console.log("✅ 저장 완료:", response.data);
+      console.log("저장 완료:", response.data);
 
       // 저장 후 DiaryListScreen으로 이동
       navigation.navigate("DiaryListScreen", { date });
     } catch (error) {
-      console.error("❌ 저장 중 오류 발생:", error);
+      console.error("저장 중 오류 발생:", error);
     }
   };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-    <SafeAreaView style={styles.safeContainer}>
-      
-        <View style={styles.container}>
+
+    <View style={styles.safeContainer}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.keyboardAvoidingContainer}
+      >
+        {/* 헤더 부분은 스크롤과 무관하게 상단에 고정 */}
         <View style={styles.header}>
             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                 <Ionicons name="chevron-back" size={28} color="#333" />
             </TouchableOpacity>
-
             <Text style={styles.headerTitle}>일기 쓰기</Text>
-
             <View style={{ width: 30 }} />
         </View>
 
-        {/* 날짜 태그 */}
-        <View style={styles.dateTag}>
-            <Text style={styles.dateText}>{date}</Text>
-        </View>
+        <ScrollView
+            ref={scrollRef} // ❗️추가: ScrollView에 ref 연결
+            style={{ flex: 1 }}
+            contentContainerStyle={styles.scrollContainer}
+            keyboardShouldPersistTaps="handled"
+        >
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+            <View style={styles.contentWrapper}>
+              {/* 날짜 태그 */}
+              <View style={styles.dateTag}>
+                  <Text style={styles.dateText}>{date}</Text>
+              </View>
 
-        {/* ✅ 제목 입력란 추가 */}
-        <TextInput
-            style={styles.titleInput}
-            value={title}
-            onChangeText={setTitle}
-            placeholder="제목을 입력하세요"
-          />
+              {/* 제목 입력란 */}
+              <TextInput
+                  style={styles.titleInput}
+                  value={title}
+                  onChangeText={setTitle}
+                  placeholder="제목을 입력하세요"
+                />
 
-        {/* 사진 추가 */}
-        <TouchableOpacity onPress={pickImage} style={styles.imageContainer}>
-            {foodImage ? (
-                <Image source={{ uri: foodImage }} style={styles.image} />
-            ) : (
-                <Text style={styles.imagePlaceholder}>📷 사진 추가</Text>
-            )}
-        </TouchableOpacity>
+              {/* 사진 추가 */}
+              <TouchableOpacity onPress={pickImage} style={styles.imageContainer}>
+                  {foodImage ? (
+                      <Image source={{ uri: foodImage }} style={styles.image} />
+                  ) : (
+                      <Text style={styles.imagePlaceholder}>📷 사진 추가</Text>
+                  )}
+              </TouchableOpacity>
 
-        {/* 텍스트 입력 */}
-        <TextInput
-            style={styles.input}
-            value={content}
-            onChangeText={setContent}
-            placeholder="음식 후기를 작성하세요"
-            multiline
-        />
+              {/* 텍스트 입력 */}
+              <TextInput
+                  style={styles.input}
+                  value={content}
+                  onChangeText={setContent}
+                  placeholder="음식 후기를 작성하세요"
+                  multiline
+                  onFocus={() => { // 입력창을 터치하면 스크롤을 맨 아래로 이동
+                    setTimeout(() => {
+                        scrollRef.current?.scrollToEnd({ animated: true });
+                    }, 50); // 키보드가 올라올 시간.
+                }}
+              />
 
-        {/* ✅ 저장 버튼 (애니메이션 추가) */}
-        <Animated.View style={[styles.saveButtonContainer, { transform: [{ scale: scaleAnim }] }]}>
-          <TouchableOpacity 
-            style={styles.saveButton} 
-            onPress={handleSave}
-            onPressIn={handlePressIn} 
-            onPressOut={handlePressOut}
-          >
-              <Text style={styles.saveButtonText}>저장하기</Text>
-          </TouchableOpacity>
-        </Animated.View>
-
-        </View>
-    </SafeAreaView>
-    </TouchableWithoutFeedback>
+              {/* 저장 버튼 (애니메이션 추가) */}
+              <Animated.View style={[styles.saveButtonContainer, { transform: [{ scale: scaleAnim }] }]}>
+                <TouchableOpacity 
+                  style={styles.saveButton} 
+                  onPress={handleSave}
+                  onPressIn={handlePressIn} 
+                  onPressOut={handlePressOut}
+                >
+                  <Text style={styles.saveButtonText}>저장하기</Text>
+                </TouchableOpacity>
+              </Animated.View>
+            </View>
+          </TouchableWithoutFeedback>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </View>
   );
 };
 
@@ -143,14 +156,23 @@ const styles = StyleSheet.create({
       flex: 1,
       backgroundColor: '#FDF6EC',
   },
+
+  keyboardAvoidingContainer: {
+    flex: 1,
+  },
+  scrollContainer: {
+    paddingHorizontal: 24,
+    paddingBottom: 40,
+  },
+  contentWrapper: { // ❗️추가: 실제 콘텐츠를 감싸는 래퍼
+    alignItems: 'center',
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingVertical: 14,
     paddingHorizontal: 20,
-    backgroundColor: '#FDF6EC', // 배경과 자연스럽게 연결
-    borderBottomWidth: 0, // ✅ 경계선 제거로 깔끔한 느낌
   },
   headerTitle: {
     fontSize: 17,
@@ -159,13 +181,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
     flex: 1,
   },
-  container: {
-      flex: 1,
-      paddingHorizontal: 24,
-      alignItems: 'center',
-  },
   dateTag: {
-      backgroundColor: 'rgba(255, 140, 66, 0.85)', // ✅ 기존보다 부드러운 오렌지
+      backgroundColor: 'rgba(255, 140, 66, 0.85)',
       paddingVertical: 8,
       paddingHorizontal: 18,
       borderRadius: 20,
@@ -182,7 +199,7 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
       color: '#fff',
   },
-  titleInput: {  // ✅ 제목 입력 스타일
+  titleInput: {
     width: '100%',
     height: 50,
     borderWidth: 0.5,
@@ -197,7 +214,7 @@ const styles = StyleSheet.create({
   imageContainer: {
     width: '100%',
     height: 300,
-    backgroundColor: '#F8F8F8', // ✅ 부드러운 그레이 배경
+    backgroundColor: '#F8F8F8',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 20,
@@ -230,14 +247,14 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
   },
   saveButtonContainer: {
-    width: '90%', // ✅ 버튼과 동일한 크기 유지
+    width: '100%',
     height: 52,
     justifyContent: 'center',
     alignItems: 'center',
 },
 
   saveButton: {
-    width: '90%',
+    width: '100%',
     height: 52,
     backgroundColor: 'rgba(255, 140, 66, 0.85)',
     borderRadius: 26,
