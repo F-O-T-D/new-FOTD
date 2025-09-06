@@ -1,9 +1,12 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect, useCallback} from 'react';
+import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import axios from 'axios'; 
 
+import config from '../config';
+import { useUserState } from '../Contexts/UserContext'; // UserContext 경로
 
 // 날짜를 'YYYY년 MM월 DD일' 형식으로 바꿔주는 함수
 const formatDate = (dateString) => {
@@ -35,48 +38,49 @@ const DiaryItem = ({ item }) => {
 
 
 // --- CalendarScreen 메인 컴포넌트 ---
-const CalendarScreen = ({ diaries = [] }) => {
+const CalendarScreen = () => {
   const today = new Date().toISOString().split('T')[0]; // 오늘 날짜를 'YYYY-MM-DD' 형식의 문자열로 저장하는 변수
   const [selectedDate, setSelectedDate] = useState(today);
   const [dailyData, setDailyData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
   const navigation = useNavigation();
+  const [user] = useUserState(); // UserContext에서 현재 로그인된 유저 정보 가져오기
 
-  //'markedDates'는 달력에 "기록이 있는 날짜"와 "선택된 날짜"를 표시하기 위한 정보를 담는 객체
-  // useMemo는 [diaries, selectedDate]가 변경될 때만 이 계산을 다시 실행
-  const markedDates = useMemo(() => {
-    const marks = {};
-
-    // 전체 일기(diaries)를 하나씩 확인하면서
-    // 일기가 있는 모든 날짜에 연한 주황색 점(dotColor)을 찍음.
-    diaries.forEach(diary => {
-      marks[diary.date] = { marked: true, dotColor: '#FFCBA4' };
-    });
-
-    // 현재 "선택된 날짜(selectedDate)"에는
-    // 진한 주황색 배경(selectedColor)을 덮어씌워 강조 표시
-    marks[selectedDate] = { 
-      selected: true, 
-      selectedColor: '#F97316', 
-      marked: !!marks[selectedDate] 
+    const markedDates = {
+      [selectedDate]: { selected: true, selectedColor: '#F97316' }
     };
 
-    //마킹된 정보 반환
-    return marks;
-  }, [diaries, selectedDate]);
+    const fetchDiariesForDate = useCallback(async (date) => {
 
+    // 유저 정보가 없으면 API를 호출하지 않음
+    if (!user?.user_id) {
+        setIsLoading(false);
+        return;
+    }
+
+      setIsLoading(true);
+      try {
+        const response = await axios.get(`${config.API_BASE_URL}/api/diary/${user.user_id}/diaries`, {
+          params: { date: date }
+        });
+        setDailyData(response.data);
+      } catch (error) {
+        console.error('일기 데이터를 불러오는 데 실패했습니다:', error);
+        setDailyData([]);
+      } finally {
+        setIsLoading(false);
+      }
+    }, [user]); //user가 변경될 때 함수를 새로 만들도록 의존성 배열에 추가
+
+
+    //useEffect: selectedDate가 변경될 때마다 서버에 데이터를 요청
     useEffect(() => {
 
-    // 전체 다이어리 목록 중 현재 선택된 날짜의 일기만 필터링
-    const filteredDiaries = diaries.filter(diary => diary.date === selectedDate);
-    
-    // 필터링된 결과(그날의 일기)를 'dailyData' 상태에 저장.
-    // 이 setDailyData가 실행되면, 화면 하단의 미리보기 영역이 새로운 내용으로 다시 렌더링
-    setDailyData(filteredDiaries);
-  }, [selectedDate, diaries]);
+      fetchDiariesForDate(selectedDate);
+    }, [selectedDate, fetchDiariesForDate]);
 
-
-  //날짜를 누르면 실행되는 함수
-  const handleDayPress = (day) => {
+    //날짜를 누르면 실행되는 함수
+    const handleDayPress = (day) => {
 
     //선택된 날짜를 상태에 저장(화면에 선택표시를 하기 위해)
     setSelectedDate(day.dateString);
@@ -121,15 +125,18 @@ const CalendarScreen = ({ diaries = [] }) => {
 
        {/* 미리보기 영역 */}
       <View style={styles.previewContainer}>
-        {dailyData.length > 0 ? (
+        {isLoading ? (
+          // --- 로딩 중일 때 ---
+          <ActivityIndicator style={{flex: 1}} size="large" color="#FF8C42" />
+        ) : dailyData.length > 0 ? (
+          // --- 일기가 있을 때 ---
           <>
             <Text style={styles.previewTitle}>{formatDate(selectedDate)}의 기록</Text>
             <FlatList
               data={dailyData}
               renderItem={({ item }) => <DiaryItem item={item} />}
-              keyExtractor={item => item.id.toString()} // key는 string 타입이어야 합니다.
+              keyExtractor={item => item.id.toString()}
             />
-            {/* [수정] 네비게이션 경로 수정 */}
             <TouchableOpacity 
               style={styles.moreButton}
               onPress={() => navigation.navigate('Diary', { screen: 'DiaryListScreen', params: { date: selectedDate } })}
@@ -138,10 +145,10 @@ const CalendarScreen = ({ diaries = [] }) => {
             </TouchableOpacity>
           </>
         ) : (
+          // --- 일기가 없을 때 ---
           <View style={styles.noDataContainer}>
             <Ionicons name="restaurant-outline" size={48} color="#D3D3D3" />
             <Text style={styles.noDataText}>{formatDate(selectedDate)}에는 기록이 없어요.</Text>
-            {/* [수정] 네비게이션 경로 수정 (일기 작성 화면으로) */}
             <TouchableOpacity 
               style={styles.addButton}
               onPress={() => navigation.navigate('Diary', { screen: 'DiaryEntryScreen', params: { date: selectedDate } })}
@@ -239,5 +246,4 @@ const styles = StyleSheet.create({
 
 });
 
-// [수정] React.memo로 컴포넌트를 감싸서 export
-export default React.memo(CalendarScreen);
+export default CalendarScreen;
