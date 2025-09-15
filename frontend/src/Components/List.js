@@ -42,7 +42,7 @@ List.propTypes = {
 
 const styles = StyleSheet.create({
   separator: {
-    height: 12, // ✅ 리스트 아이템 사이의 여백 조정
+    height: 12, // 리스트 아이템 사이의 여백 조정
   },
 });
 

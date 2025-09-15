@@ -14,10 +14,10 @@ const MapScreen = () => {
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [user] = useUserState();
 
-  // ✅ Kakao API 요청 함수 (REST API Key 사용)
+  // Kakao API 요청 함수 (REST API Key 사용)
   const fetchKakaoAddress = async (query) => {
     try {
-      console.log(`🔍 Kakao API 요청: ${query}`);
+      console.log(`Kakao API 요청: ${query}`);
       const response = await fetch(
         `https://dapi.kakao.com/v2/local/search/keyword.json?query=${query}`,
         {
@@ -29,9 +29,9 @@ const MapScreen = () => {
         }
       );
 
-      console.log("✅ Response Status:", response.status);
+      console.log("Response Status:", response.status);
       const data = await response.json();
-      console.log("📍 Kakao API 응답 데이터:", data);
+      console.log("Kakao API 응답 데이터:", data);
 
       if (data.documents && data.documents.length > 0) {
         const firstResult = data.documents[0];
@@ -42,22 +42,22 @@ const MapScreen = () => {
           lng: firstResult.x,
         });
 
-        console.log("📍 검색 결과:", firstResult);
+        console.log("검색 결과:", firstResult);
       } else {
-        console.log("❌ No results found");
+        console.log("No results found");
         setSelectedPlace(null); // 검색 결과가 없을 때 초기화
       }
     } catch (error) {
-      console.error("❌ Kakao API 요청 오류:", error);
+      console.error("Kakao API 요청 오류:", error);
     }
   };
 
-  // ✅ WebView에서 Kakao 지도 불러오기 확인용
+  // WebView에서 Kakao 지도 불러오기 확인용
   const handleMessage = (event) => {
-    console.log("📩 WebView 메시지 수신:", event.nativeEvent.data);
+    console.log("WebView 메시지 수신:", event.nativeEvent.data);
   };
 
-  // ✅ 장소 등록 기능
+  // 장소 등록 기능
   const handleRegistration = async () => {
     if (!selectedPlace) {
       alert("장소를 선택해주세요!");
@@ -74,16 +74,16 @@ const MapScreen = () => {
           lng: selectedPlace.lng,
         }
       );
-      console.log("✅ 등록 완료:", response.data);
+      console.log("등록 완료:", response.data);
       navigation.navigate("ListScreen", { refresh: true });
     } catch (error) {
-      console.error("❌ 등록 오류:", error.response?.data || error.message);
+      console.error("등록 오류:", error.response?.data || error.message);
     }
   };
 
   return (
     <View style={styles.container}>
-      {/* ✅ 검색창 */}
+      {/* 검색창 */}
       <View style={styles.searchContainer}>
         <TextInput
           style={styles.input}
@@ -94,13 +94,13 @@ const MapScreen = () => {
         <Button
           title="검색"
           onPress={() => {
-            console.log("🔍 검색 버튼 클릭됨");
+            console.log("검색 버튼 클릭됨");
             fetchKakaoAddress(searchQuery);
           }}
         />
       </View>
 
-      {/* ✅ WebView로 Kakao 지도 표시 */}
+      {/* WebView로 Kakao 지도 표시 */}
       <WebView
         ref={webViewRef}
         originWhitelist={["*"]}
@@ -114,7 +114,7 @@ const MapScreen = () => {
             <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=${config.KAKAO_JAVASCRIPT_KEY}&libraries=services"></script>
           </head>
           <body>
-            <div id="map" style="width:100%; height:100vh;"></div> <!-- ✅ 높이를 70vh로 설정 -->
+            <div id="map" style="width:100%; height:100vh;"></div> <!-- 높이를 70vh로 설정 -->
             <script>
               var mapContainer = document.getElementById('map');
               var mapOption = { 
@@ -145,10 +145,10 @@ const MapScreen = () => {
         domStorageEnabled={true}
         onMessage={handleMessage}
         style={{flex: 1}}
-        onLoadEnd={() => console.log("✅ WebView 로드 완료")}
+        onLoadEnd={() => console.log("WebView 로드 완료")}
       />
 
-      {/* ✅ 선택한 장소 정보 및 등록 버튼 */}
+      {/* 선택한 장소 정보 및 등록 버튼 */}
       {selectedPlace ? (
         <View style={styles.infoContainer}>
           <Text>{selectedPlace.name}</Text>

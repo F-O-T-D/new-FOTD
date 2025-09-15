@@ -1,7 +1,7 @@
 import Constants from "expo-constants";
 
 // 개발 PC의 실제 IP 주소 (Wi-Fi IPv4 주소를 직접 입력)
-const LOCAL_IP = "172.30.1.3"; // PC의 IP 주소를 수동 설정
+const LOCAL_IP = "10.14.17.64"; // PC의 IP 주소를 수동 설정
 
 // Expo 환경에서 실행될 때 개발 PC의 IP 자동 감지
 export const API_BASE_URL = Constants.manifest?.debuggerHost
@@ -11,7 +11,7 @@ export const API_BASE_URL = Constants.manifest?.debuggerHost
 console.log("🛠️ API_BASE_URL 설정됨:", API_BASE_URL); // 설정된 API 주소 확인
 
 
-// 🔹 Kakao API 키 추가 (REST API 키 & JavaScript 키)
+// Kakao API 키 추가 (REST API 키 & JavaScript 키)
 
 // 최종 설정 내보내기
 export default { API_BASE_URL, KAKAO_REST_API_KEY, KAKAO_JAVASCRIPT_KEY };

@@ -11,7 +11,7 @@ import { PRIMARY, WHITE } from '../Colors';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { MapRoutes } from '../Navigations/Routes';
-import config from "../config";  // ✅ config.js에서 API 키 가져오기
+import config from "../config";  // config.js에서 API 키 가져오기
 
 const BOTTOM = 20;
 
@@ -45,25 +45,25 @@ const InputFAB = () => {
     setLongitude(0);
   };
 
-  // ✅ Kakao API를 호출하여 가게 주소 가져오기
+  // Kakao API를 호출하여 가게 주소 가져오기
   const getStoreAddress = async () => {
     try {
-      console.log(`🔍 Kakao API 요청: ${storeName}`); // ✅ 검색어 확인 로그 추가
+      console.log(`🔍 Kakao API 요청: ${storeName}`); // 검색어 확인 로그 추가
 
       const response = await fetch(
         `https://dapi.kakao.com/v2/local/search/keyword.json?query=${storeName}`,
         {
           method: 'GET',
           headers: {
-            Authorization: `KakaoAK ${config.KAKAO_REST_API_KEY}`, // ✅ REST API 키 적용
+            Authorization: `KakaoAK ${config.KAKAO_REST_API_KEY}`, // REST API 키 적용
             'Content-Type': 'application/json',
           },
         }
       );
 
-      console.log('✅ Response Status:', response.status); // ✅ 응답 상태 확인
+      console.log('Response Status:', response.status); // 응답 상태 확인
       const data = await response.json();
-      console.log('📍 Kakao API 응답 데이터:', data); // ✅ 응답 데이터 확인
+      console.log('Kakao API 응답 데이터:', data); // 응답 데이터 확인
 
       if (data.documents && data.documents.length > 0) {
         const firstResult = data.documents[0];
@@ -76,18 +76,18 @@ const InputFAB = () => {
         console.log('Latitude:', firstResult.y);
         console.log('Longitude:', firstResult.x);
 
-        return firstResult; // ✅ 검색된 장소 데이터를 반환
+        return firstResult; // 검색된 장소 데이터를 반환
       } else {
-        console.log('❌ No results found');
+        console.log('No results found');
         return null;
       }
     } catch (error) {
-      console.error('❌ Error fetching data:', error);
+      console.error('Error fetching data:', error);
       return null;
     }
   };
 
-  // ✅ 검색된 장소를 지도 화면으로 이동시키는 함수
+  // 검색된 장소를 지도 화면으로 이동시키는 함수
   const navigateToMapScreen = (result) => {
     if (result) {
       navigation.navigate(MapRoutes.MAP, {
@@ -99,17 +99,17 @@ const InputFAB = () => {
     }
   };
 
-  // ✅ 버튼 클릭 시 실행되는 함수 (비동기 처리 개선)
+  // 버튼 클릭 시 실행되는 함수 (비동기 처리 개선)
   const onPressButton = async () => {
     if (showInput) {
       if (storeName.trim() !== '') {
-        const result = await getStoreAddress(); // ✅ 가게 검색 API 호출
+        const result = await getStoreAddress(); // 가게 검색 API 호출
 
         if (result) {
-          navigateToMapScreen(result); // ✅ 검색 결과를 지도 화면으로 이동
+          navigateToMapScreen(result); // 검색 결과를 지도 화면으로 이동
         }
         
-        toggleInput(); // ✅ 검색 후 입력창 닫기
+        toggleInput(); // 검색 후 입력창 닫기
       } else {
         toggleInput();
       }
@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
     bottom: BOTTOM,
   },
   expandedInput: {
-    height: 60, // Adjust the desired height
+    height: 60, 
     width: 200,
     bottom: BOTTOM,
   },

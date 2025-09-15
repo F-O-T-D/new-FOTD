@@ -16,7 +16,7 @@ const MapService = {
 
      // 가게 추가 기능
      async addStore(userId, name, address, lat, lng) {
-        return await Map.create({ // ✅ Map 모델 사용하여 DB에 저장
+        return await Map.create({ // Map 모델 사용하여 DB에 저장
             userId,
             name,
             address,
