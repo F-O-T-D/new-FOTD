@@ -36,7 +36,7 @@ const DiaryListScreen = ({ route }) => {
           return;
       }
         console.log(`${date}의 일기 데이터를 불러옵니다.`);
-        const response = await axios.get(`${config.API_BASE_URL}/api/diary/${user.id}/diaries`, {
+        const response = await axios.get(`${config.API_BASE_URL}/api/users/${user.id}/diaries`, {
             params: { date }  // 쿼리 파라미터로 날짜 전달
         });        
         
