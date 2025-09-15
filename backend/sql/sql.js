@@ -1,7 +1,7 @@
 module.exports = {
-  userList: `SELECT * FROM user_table`,
-  userInsert: `INSERT INTO user_table SET ?`,
-  userUpdate: `UPDATE user_table SET ? WHERE user_id=?`,
-  userDelete: `DELETE FROM user_table WHERE user_id=?`,
-  userLogin: `SELECT * FROM user_table WHERE user_email=?`,
+  userList: `SELECT * FROM users`,
+  userInsert: `INSERT INTO users SET ?`,
+  userUpdate: `UPDATE users SET ? WHERE userId=?`,
+  userDelete: `DELETE FROM users WHERE userId=?`,
+  userLogin: `SELECT * FROM users WHERE email=?`,
 };

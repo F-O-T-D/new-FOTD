@@ -65,9 +65,9 @@ const MapScreen = () => {
     }
     try {
       const response = await axios.post(
-        `${config.API_BASE_URL}/api/map/${user?.user_id}`,
+        `${config.API_BASE_URL}/api/map/${user?.id}`,
         {
-          userId: user?.user_id,
+          userId: user?.id,
           name: selectedPlace.name,
           address: selectedPlace.address,
           lat: selectedPlace.lat,

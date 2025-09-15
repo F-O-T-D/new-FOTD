@@ -37,7 +37,7 @@ const ProfileScreen = () => {
           try {
             //경로 다시 확인해야함
             const response = await axios.delete(
-              `${config.API_BASE_URL}/api/user/delete/${user.user_id}`
+              `${config.API_BASE_URL}/api/user/delete/${user.id}`
             );
 
             if (response.status === 200) { // 성공적인 응답 확인
@@ -67,8 +67,8 @@ const ProfileScreen = () => {
           <View style={styles.profileInfo}>
             <Ionicons name="person-circle-outline" size={64} color="#FF8C42" />
             <View style={styles.profileTextContainer}>
-              <Text style={styles.profileName}>{user?.user_name || '사용자'}</Text>
-              <Text style={styles.profileEmail}>{user?.user_email || '이메일 정보 없음'}</Text>
+              <Text style={styles.profileName}>{user?.name || '사용자'}</Text>
+              <Text style={styles.profileEmail}>{user?.email || '이메일 정보 없음'}</Text>
             </View>
           </View>
           <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>

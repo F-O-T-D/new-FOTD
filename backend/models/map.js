@@ -6,7 +6,7 @@ module.exports = class Map extends Sequelize.Model {
     static init(sequelize) {
         return super.init(
             {
-            storeId: {
+            id: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
                 autoIncrement: true,
@@ -17,8 +17,8 @@ module.exports = class Map extends Sequelize.Model {
                 allowNull:true,
                 references: {
                     model: {
-                        tableName:'user_table',
-                        key:'user_id',
+                        tableName:'users',
+                        key:'id',
                     },
                     onUpdate: 'CASCADE',
                     onDelete: 'CASCADE',
@@ -40,7 +40,7 @@ module.exports = class Map extends Sequelize.Model {
                 type: Sequelize.DOUBLE,
                 allowNull: false,
             },
-            create_data: {
+            createdAt: {
                 type: Sequelize.DATE,
                 allowNull: false,
                 defaultValue: Sequelize.NOW,
@@ -50,13 +50,14 @@ module.exports = class Map extends Sequelize.Model {
             sequelize,
             timestamps: false,
             modelName: 'Map',
-            tableName: 'user_map',
+            tableName: 'maps',
             paranoid : false,
             charset: 'utf8mb4',
             collate: 'utf8mb4_general_ci',
         });
     }
     static associate(db) {
+        // Map은 User에 속해있다
         db.Map.belongsTo(db.User, { foreignKey: 'userId', as:'user'});
     }
 };

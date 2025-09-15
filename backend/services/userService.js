@@ -9,12 +9,12 @@ const UserService = {
     async createUser(userDetails) {
         console.log("🔧 회원 데이터 저장 중:", userDetails);  // 회원 정보 로그 찍기
 
-        const hashedPassword = await bcrypt.hash(userDetails.user_password, 10);
-        return User.create({ ...userDetails, user_password: hashedPassword });
+        const hashedPassword = await bcrypt.hash(userDetails.password, 10);
+        return User.create({ ...userDetails, password: hashedPassword });
     },
 
     async findUserByEmail(email) { //이메일을 DB에서 조회하는 함수
-        return User.findOne({ where: { user_email: email } });
+        return User.findOne({ where: { email: email } });
     },
 
     async validatePassword(inputPassword, storedPassword) {
@@ -29,7 +29,7 @@ const UserService = {
         const user = await User.findByPk(userId);
         if (!user) throw new Error('User not found');
         Object.assign(user, userDetails);
-        user.user_password = await bcrypt.hash(userDetails.user_password, 10);
+        user.password = await bcrypt.hash(userDetails.password, 10);
         await user.save();
         return user;
     },

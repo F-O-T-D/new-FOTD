@@ -47,22 +47,22 @@ const DiaryEntryScreen = ({ route }) => {
 
   // "저장하기" 버튼을 눌렀을 때 서버로 데이터 전송
   const handleSave = async () => {
-    Keyboard.dismiss();  // ✅ 키보드 먼저 닫기
+    Keyboard.dismiss();  // 키보드 먼저 닫기
     try {
-      if (!user?.user_id) {
-        console.warn("user_id가 없음! 저장 불가");
+      if (!user?.id) {
+        console.warn("userId가 없음! 저장 불가");
         return;
       }
 
       const newDiary = {
-        userId: user.user_id,
+        userId: user.id,
         date,
         title,
         content,
         image: foodImage || null,
       };
       console.log("저장 요청 데이터:", newDiary);
-      const response = await axios.post(`${config.API_BASE_URL}/api/diary/${user.user_id}/diary`, newDiary);
+      const response = await axios.post(`${config.API_BASE_URL}/api/diary/${user.id}/diary`, newDiary);
       console.log("저장 완료:", response.data);
 
       // 저장 후 DiaryListScreen으로 이동

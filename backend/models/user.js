@@ -6,21 +6,21 @@ module.exports = class User extends Sequelize.Model {
     static init(sequelize) {
         return super.init(
         {
-            user_id: {
+            id: {
                 type: Sequelize.INTEGER,
                 primaryKey: true, 
                 autoIncrement: true,
                 allowNull: false,
             },
-            user_name: {
+            name: {
                 type: Sequelize.STRING(100),
                 allowNull: false,
             },
-            user_password: {
+            password: {
                 type: Sequelize.STRING(255),
                 allowNull: false,
             },
-           user_email: {
+           email: {
                 type: Sequelize.STRING(255),
                 allowNull: false,
             }, 
@@ -28,7 +28,7 @@ module.exports = class User extends Sequelize.Model {
             sequelize,
             timestamps: false,
             modelName: 'User',
-            tableName: 'user_table',
+            tableName: 'users',
             paranoid: false,
         });
     } 
