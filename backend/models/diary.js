@@ -14,7 +14,7 @@ class Diary extends Model {
                     type: DataTypes.STRING,
                     allowNull: false,
                 },
-                title: { // ✅ 제목 추가
+                title: { // 제목 추가
                     type: DataTypes.STRING,
                     allowNull: false,
                 },
@@ -28,7 +28,7 @@ class Diary extends Model {
                 }
             },
             {
-                sequelize, // ✅ Sequelize 인스턴스를 명확히 전달
+                sequelize, // Sequelize 인스턴스를 명확히 전달
                 modelName: 'Diary',
                 tableName: 'diaries',
                 timestamps: false,

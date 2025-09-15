@@ -21,7 +21,7 @@ const ListItem = memo(({ item, onDeleteItem, onPressItem }) => {
 
   return (
     <Animated.View style={[styles.container, { transform: [{ scale: scaleAnim }] }]}>
-      {/* ✅ 가게 리스트 터치 시 맵으로 이동 */}
+      {/* 가게 리스트 터치 시 맵으로 이동 */}
       <TouchableOpacity
         style={styles.task}
         activeOpacity={0.7}
@@ -30,7 +30,7 @@ const ListItem = memo(({ item, onDeleteItem, onPressItem }) => {
         <Text style={styles.taskText}>{item.name}</Text>
       </TouchableOpacity>
 
-      {/* ✅ 삭제 버튼 수정 (터치 문제 해결) */}
+      {/* 삭제 버튼 수정 */}
       <TouchableOpacity style={styles.deleteButton} onPress={handleDelete} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
         <MaterialCommunityIcons name="trash-can-outline" size={24} color={GRAY.DARK} />
       </TouchableOpacity>

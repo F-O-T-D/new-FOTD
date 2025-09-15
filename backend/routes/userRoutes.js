@@ -3,7 +3,7 @@ const userController = require('../controllers/userController');
 const mapController = require('../controllers/mapController');
 const router = express.Router();
 
-// ✅ API 상태 확인용 (GET /api/user)
+// API 상태 확인용 (GET /api/user)
 router.get('/', (req, res) => {
          res.json({ success: true, message: "User API is working!" });
      });

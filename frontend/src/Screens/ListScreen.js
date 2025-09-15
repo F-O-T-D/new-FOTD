@@ -1,5 +1,5 @@
 /*
-가게 목록 화면 (메인 화면)
+가게 목록 화면
 
 사용자가 추가한 가게 목록을 보여줌.
 InputFAB 버튼을 눌러 MapScreen.js로 이동.
@@ -44,7 +44,7 @@ const ListScreen = () => {
     }
   };
 
-  // ✅ 검색 기능
+  // 검색 기능
   const handleSearch = (query) => {
     setSearchQuery(query);
     if (query.trim() === '') {
@@ -81,10 +81,10 @@ const ListScreen = () => {
 
   //지도화면으로 이동
   const buttonPress = () => {
-    console.log("📍 버튼 눌림! searchQuery 값:", searchQuery);
+    console.log("버튼 눌림! searchQuery 값:", searchQuery);
   
     navigation.navigate(MapRoutes.MAP, {
-      searchQuery: searchQuery, // ✅ 검색어 함께 전달
+      searchQuery: searchQuery, // 검색어 함께 전달
     });
   };
   
@@ -93,7 +93,7 @@ const ListScreen = () => {
 //화면이 포커스될 때마다 가게 목록을 갱신
   useFocusEffect(
     React.useCallback(() => {
-      console.log("🔄 useFocusEffect 실행됨! user_id:", user?.user_id); // ✅ 로그 추가
+      console.log("🔄 useFocusEffect 실행됨! user_id:", user?.user_id); // 로그 추가
   
       const fetchUpdatedList = async () => {
         try {
@@ -109,24 +109,24 @@ const ListScreen = () => {
 
   return (
     <View style={styles.container}>
-      {/* 🏡 화면 제목 */}
+      {/* 화면 제목 */}
       <View style={styles.header}>
         <Ionicons name="storefront-outline" size={26} color="#F97316" />
         <Text style={styles.headerTitle}>나의 가게 리스트</Text>
       </View>
 
-{/* 🔍 검색 입력 */}
+{/* 검색 입력 */}
 <View style={styles.searchBar}>
         <Ionicons name="search" size={20} color="#888" />
         <TextInput
           style={styles.searchInput}
           placeholder="가게 이름 검색"
           value={searchQuery}
-          onChangeText={handleSearch} // ✅ 검색어 입력 이벤트 적용
+          onChangeText={handleSearch} // 검색어 입력 이벤트 적용
         />
       </View>
 
-      {/* 📌 가게 목록 or 비어있을 때 메시지 */}
+      {/* 가게 목록 or 비어있을 때 메시지 */}
       {restauList.length ? (
         <List data={restauList} onDeleteItem={handleDeleteItem} />
       ) : (
@@ -148,7 +148,7 @@ const ListScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF9F3', // ✅ 좀 더 따뜻한 크림톤 배경
+    backgroundColor: '#FFF9F3', // 좀 더 따뜻한 크림톤 배경
     paddingBottom: 20,
   },
   header: {
