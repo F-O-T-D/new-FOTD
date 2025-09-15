@@ -62,7 +62,7 @@ const DiaryEntryScreen = ({ route }) => {
         image: foodImage || null,
       };
       console.log("저장 요청 데이터:", newDiary);
-      const response = await axios.post(`${config.API_BASE_URL}/api/diary/${user.id}/diary`, newDiary);
+      const response = await axios.post(`${config.API_BASE_URL}/api/users/${user.id}/diaries`, newDiary);
       console.log("저장 완료:", response.data);
 
       // 저장 후 DiaryListScreen으로 이동

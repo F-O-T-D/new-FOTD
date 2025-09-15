@@ -65,7 +65,7 @@ const MapScreen = () => {
     }
     try {
       const response = await axios.post(
-        `${config.API_BASE_URL}/api/map/${user?.id}`,
+        `${config.API_BASE_URL}/api/users/${user?.id}/muckits`,
         {
           userId: user?.id,
           name: selectedPlace.name,

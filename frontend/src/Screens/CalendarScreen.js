@@ -60,7 +60,7 @@ const CalendarScreen = () => {
 
       setIsLoading(true);
       try {
-        const response = await axios.get(`${config.API_BASE_URL}/api/diary/${user.id}/diaries`, {
+        const response = await axios.get(`${config.API_BASE_URL}/api/users/${user.id}/diaries`, {
           params: { date: date }
         });
         setDailyData(response.data);

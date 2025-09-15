@@ -37,7 +37,7 @@ const ProfileScreen = () => {
           try {
             //경로 다시 확인해야함
             const response = await axios.delete(
-              `${config.API_BASE_URL}/api/user/delete/${user.id}`
+              `${config.API_BASE_URL}/api/users/${user.id}`
             );
 
             if (response.status === 200) { // 성공적인 응답 확인

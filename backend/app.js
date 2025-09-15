@@ -1,12 +1,8 @@
 const express = require('express');
+const app = express();
 const cors = require('cors');
 
 
-const userRoutes = require('./routes/userRoutes'); // 사용자 관련 라우트
-const mapRoutes = require('./routes/mapRoutes');   // 지도 관련 라우트
-const diaryRoutes = require('./routes/diaryRoutes'); //일기 관련 라우트
-
-const app = express();
 
 // 미들웨어 설정
 app.use(cors({
@@ -17,9 +13,19 @@ app.use(cors({
 app.use(express.json());
 
 // 라우트 설정
-app.use('/api/user', userRoutes);
-app.use('/api/map', mapRoutes);
-app.use('/api/diary', diaryRoutes);
+const authRoutes = require('./routes/authRoutes');
+const userRoutes = require('./routes/userRoutes');
+const diaryRoutes = require('./routes/diaryRoutes');
+const muckitRoutes = require('./routes/muckitRoutes');
+
+// 독립적인 라우트
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+
+// 사용자에게 종속된 라우트 (계층적으로 연결)
+app.use('/api/users/:userId/diaries', diaryRoutes);
+app.use('/api/users/:userId/muckits', muckitRoutes);
+
 
 // 없는 라우트 처리 404
 app.use((req, res, next) => {
