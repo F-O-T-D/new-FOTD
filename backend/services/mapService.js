@@ -5,13 +5,13 @@ const MapService = {
         return Map.findAll({ where: { userId } });
     },
 
-    async getStoreById(userId, storeId) {
+    async getStoreById(userId, id) {
         const maps = await Map.findAll({ where: { userId } });
-        return maps.find(store => store.storeId === Number(storeId));
+        return maps.find(store => store.id === Number(id));
     },
 
-    async deleteStore(storeId) {
-        return Map.destroy({ where: { storeId } });
+    async deleteStore(id) {
+        return Map.destroy({ where: { id } });
     },
 
      // 가게 추가 기능

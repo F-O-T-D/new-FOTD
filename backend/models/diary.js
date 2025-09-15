@@ -1,6 +1,6 @@
 const { DataTypes, Model } = require('sequelize');
 
-class Diary extends Model {
+module.exports = class Diary extends Model {
     static init(sequelize) {
         return super.init(
             {
@@ -9,7 +9,16 @@ class Diary extends Model {
                     autoIncrement: true,
                     primaryKey: true,
                 },
-                userId: { type: DataTypes.INTEGER, allowNull: false },
+                userId: { 
+                    type: DataTypes.INTEGER, 
+                    allowNull: false,
+                    references: { // <- User 테이블과 연결하는 references 반드시 추가
+                    model: 'users',
+                    key: 'id',
+                    },
+                    onUpdate: 'CASCADE',
+                    onDelete: 'CASCADE',
+                },
                 date: {
                     type: DataTypes.STRING,
                     allowNull: false,
@@ -41,4 +50,3 @@ class Diary extends Model {
     }
 }
 
-module.exports = Diary;

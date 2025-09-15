@@ -46,7 +46,7 @@ const Navigation = () => {
 
   return (
       /* 유저 상태에 따라 AuthStack 또는 ContentTab 렌더링 */
-      user && user.user_id ? <ContentTab /> : <AuthStack />
+      user && user.id ? <ContentTab /> : <AuthStack />
   );
 };
 

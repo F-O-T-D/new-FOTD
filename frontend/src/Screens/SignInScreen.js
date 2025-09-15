@@ -64,8 +64,8 @@ const SignInScreen = () => {
         const response = await axios.post(
           `${API_BASE_URL}/api/user/login`,
           {
-            user_email: form.email,
-            user_password: form.password,
+            email: form.email,
+            password: form.password,
           }
         );
 

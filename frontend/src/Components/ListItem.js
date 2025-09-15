@@ -13,7 +13,7 @@ const ListItem = memo(({ item, onDeleteItem, onPressItem }) => {
       `'${item.name}'을 삭제하시겠습니까?`,
       [
         { text: '취소', style: 'cancel' },
-        { text: '삭제', onPress: () => onDeleteItem(item.storeId) },
+        { text: '삭제', onPress: () => onDeleteItem(item.id) },
       ],
       { cancelable: true }
     );

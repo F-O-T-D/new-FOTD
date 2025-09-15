@@ -53,14 +53,14 @@ const CalendarScreen = () => {
     const fetchDiariesForDate = useCallback(async (date) => {
 
     // 유저 정보가 없으면 API를 호출하지 않음
-    if (!user?.user_id) {
+    if (!user?.id) {
         setIsLoading(false);
         return;
     }
 
       setIsLoading(true);
       try {
-        const response = await axios.get(`${config.API_BASE_URL}/api/diary/${user.user_id}/diaries`, {
+        const response = await axios.get(`${config.API_BASE_URL}/api/diary/${user.id}/diaries`, {
           params: { date: date }
         });
         setDailyData(response.data);

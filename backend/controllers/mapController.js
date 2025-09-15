@@ -13,8 +13,8 @@ const MapController = {
 
     async getStoreById(req, res) {
         try {
-            const { userId, storeId } = req.params;
-            const store = await mapService.getStoreById(userId, storeId);
+            const { userId, id } = req.params;
+            const store = await mapService.getStoreById(userId, id);
             if (!store) return res.status(404).json({ success: false, error: 'Store not found' });
             res.json(store);
         } catch (error) {
@@ -25,7 +25,7 @@ const MapController = {
 
     async deleteStore(req, res) {
         try {
-            await mapService.deleteStore(req.params.storeId);
+            await mapService.deleteStore(req.params.id);
             res.json({ success: true });
         } catch (error) {
             console.error(error);
