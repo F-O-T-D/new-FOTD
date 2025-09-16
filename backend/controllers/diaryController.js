@@ -37,7 +37,7 @@ const diaryController = {
             // const newDiary = await diaryService.addDiary(userId, date, title, content, image);
            
             const diaryData = req.body; // 데이터를 객체로 묶음 (객체 많아질때 가독성 유지하기 위해)
-            const newDiary = await diaryService.addDiary(userId, diaryData);
+            const newDiary = await diaryService.addDiary(userId, ...diaryData);
             
             res.status(201).json({ success: true, data: newDiary });
         } catch (error) {
