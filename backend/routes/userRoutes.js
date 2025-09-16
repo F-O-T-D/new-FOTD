@@ -20,12 +20,12 @@ router.get('/', (req, res) => {
 
 
 // GET /api/users/:userId (특정 사용자 정보 조회)
-router.get('/:userId', userController.getUserById);
+router.get('/:userId', userController.getUser);
 
 // PATCH /api/users/:userId (특정 사용자 정보 수정)
-router.patch('/:userId', userController.updateUser);
+router.patch('/:userId', userController.update);
 
 // DELETE /api/users/:userId (회원 탈퇴)
-router.delete('/:userId', userController.deleteUser);
+router.delete('/:userId', userController.delete);
 
 module.exports = router;
