@@ -2,15 +2,15 @@ const diaryService = require('../services/diaryService');
 
 const diaryController = {
     // 특정 날짜의 일기 조회
-    async getDiariesByDate(req, res) {
+    async getDiaries(req, res) {
         try {
             const { userId } = req.params;
             const { date } = req.query;  // 날짜를 쿼리 파라미터에서 가져옴
             const diaries = await diaryService.getDiariesByDate(userId, date);
-            res.json(diaries);
+            res.status(200).json({ success: true, data: diaries });
         } catch (error) {
-            console.error('getDiariesByDate 오류:', error);
-            res.status(500).json({ error: '서버 오류' });
+            console.error('일기 목록 조회 오류:', error);
+            res.status(500).json({ success: false, error: 'Error fetching diaries' });
         }
     },
 
@@ -20,12 +20,12 @@ const diaryController = {
             const { userId, diaryId } = req.params;
             const diary = await diaryService.getDiaryById(userId, diaryId);
             if (!diary) {
-                return res.status(404).json({ error: '일기를 찾을 수 없음' });
+                return res.status(404).json({ success: false, error: 'Diary not found' });
             }
-            res.json(diary);
+            res.status(200).json({ success: true, data: diary });
         } catch (error) {
-            console.error('📌 getDiaryById 오류:', error);
-            res.status(500).json({ error: '서버 오류' });
+            console.error('일기 상세 조회 오류:', error);
+            res.status(500).json({ success: false, error: 'Error fetching diary' });
         }
     },
 
@@ -33,12 +33,15 @@ const diaryController = {
     async addDiary(req, res) {
         try {
             const { userId } = req.params;
-            const { date, title, content, image } = req.body;
-            const newDiary = await diaryService.addDiary(userId, date, title, content, image);
-            res.status(201).json(newDiary);
+            // const { date, title, content, image } = req.body;
+            // const newDiary = await diaryService.addDiary(userId, date, title, content, image);
+            
+            const newDiary = await diaryService.addDiary(userId, diaryData);
+            const diaryData = req.body; // 데이터를 객체로 묶음 (왜이렇게 하는 거지?)
+            res.status(201).json({ success: true, data: newDiary });
         } catch (error) {
-            console.error('addDiary 오류:', error);
-            res.status(500).json({ error: '서버 오류' });
+            console.error('일기 추가 오류:', error);
+      res.status(500).json({ success: false, error: 'Error adding diary' });
         }
     },
 
@@ -47,10 +50,10 @@ const diaryController = {
         try {
             const { diaryId } = req.params;
             await diaryService.deleteDiary(diaryId);
-            res.json({ message: '일기 삭제 완료' });
+            res.status(200).json({ success: true, message: 'Diary deleted successfully' });
         } catch (error) {
-            console.error('deleteDiary 오류:', error);
-            res.status(500).json({ error: '서버 오류' });
+            console.error('일기 삭제 오류:', error);
+            res.status(500).json({ success: false, error: 'Error deleting diary' });
         }
     }
 };
