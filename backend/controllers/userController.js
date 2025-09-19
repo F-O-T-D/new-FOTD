@@ -3,15 +3,15 @@ const userService = require('../services/userService');
 const userController = {
 
 
-    // async getAllUsers(req, res) {
-    //     try {
-    //         const users = await userService.getAllUsers();
-    //         res.json(users);
-    //     } catch (error) {
-    //         console.error(error);
-    //         res.status(500).json({ success: false, error: 'Error fetching users' });
-    //     }
-    // }, 
+    async getAllUsers(req, res) {
+        try {
+            const users = await userService.getAllUsers();
+            res.json(users);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ success: false, error: 'Error fetching users' });
+        }
+    }, 
 
     async getUser(req, res) {
         const userId = req.params.userId;
@@ -29,7 +29,7 @@ const userController = {
     async update(req, res) {
         try {
             const user = await userService.updateUser(req.params.userId, req.body);
-            res.status(200).json({ success: true, data: updatedUser });
+            res.status(200).json({ success: true, data: user });
         } catch (error) {
             console.error('사용자 업데이트 오류:', error);
             res.status(500).json({ success: false, error: 'Error updating user' });

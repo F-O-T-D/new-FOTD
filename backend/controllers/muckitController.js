@@ -3,7 +3,7 @@ const muckitService = require('../services/muckitService'); // 서비스 이름�
 const muckitController = {
     async getMyMuckits(req, res) { // getStores -> getMyMuckits
         try {
-            const muckits = await mapService.getMuckitsByUserId(req.params.userId);
+            const muckits = await muckitService.getMuckitsByUserId(req.params.userId);
             res.status(200).json({ success: true, data: muckits });
         } catch (error) {
             console.error('먹킷리스트 조회 오류:', error);
@@ -14,7 +14,7 @@ const muckitController = {
     async getMuckitById(req, res) { //getStoreById -> getMuckitById
         try {
             const { userId, id } = req.params;
-            const store = await mapService.getMuckitById(userId, id);
+            const store = await muckitService.getMuckitById(userId, id);
             if (!store) return res.status(404).json({ success: false, error: 'Store not found' });
             res.status(200).json({ success: true, data: store });
         } catch (error) {
@@ -26,7 +26,7 @@ const muckitController = {
 
 
     
-    async addStore(req, res) { // addStore -> addMuckit
+    async addMuckit(req, res) { // addStore -> addMuckit
         try {
             const { userId } = req.params;
             const muckitData = req.body;
