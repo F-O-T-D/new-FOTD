@@ -1,6 +1,6 @@
 const Map = require('../models/map');
 
-const MapService = {
+const muckitService = {
     async getMuckitsByUserId(userId) {
         return Map.findAll({ where: { userId } });
     },
@@ -26,4 +26,4 @@ const MapService = {
     }
 };
 
-module.exports = MapService;
+module.exports = muckitService;
