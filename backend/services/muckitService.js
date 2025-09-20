@@ -23,6 +23,8 @@ const muckitService = {
             lat,  
             lng   
         });
+
+         //return await Map.create(muckitData); // 받은 객체를 그대로 create 함수에 전달
     }
 };
 

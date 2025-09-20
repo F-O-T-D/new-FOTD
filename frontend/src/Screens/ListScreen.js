@@ -37,8 +37,8 @@ const ListScreen = () => {
       const response = await fetch(`${config.API_BASE_URL}/api/users/${userId}/muckits`);
       const data = await response.json();
       console.log('Fetched data:', data); // 'data' 객체 콘솔에 출력
-      setRestauList(data); // 가게 정보를 state에 저장
-      setFilteredRestauList(data); // 검색어 필터링을 위한 초기값 설정
+      setRestauList(data.data); // 가게 정보를 state에 저장, .data를 한 번 더 붙여서 배열을 꺼내온다
+      setFilteredRestauList(data.data); // 검색어 필터링을 위한 초기값 설정
     } catch (error) {
       console.error('가게 정보를 불러오는데 오류 발생:', error);
     }
