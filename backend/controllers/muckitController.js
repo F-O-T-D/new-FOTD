@@ -29,8 +29,13 @@ const muckitController = {
     async addMuckit(req, res) { // addStore -> addMuckit
         try {
             const { userId } = req.params;
-            const muckitData = req.body;
-            const newMuckit = await muckitService.addMuckit({ userId, ...muckitData });
+
+            // const muckitData = req.body;
+            // const newMuckit = await muckitService.addMuckit({ userId, ...muckitData });
+
+            const { name, address, lat, lng } = req.body;
+            const newMuckit = await muckitService.addMuckit(userId, name, address, lat, lng);
+
             res.status(201).json({ success: true, data: newMuckit });
         } catch (error) {
             console.error('먹킷리스트 추가 오류:', error);

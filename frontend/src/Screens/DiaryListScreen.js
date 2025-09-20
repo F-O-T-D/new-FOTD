@@ -41,7 +41,7 @@ const DiaryListScreen = ({ route }) => {
         });        
         
         console.log("가져온 일기 목록:", response.data);
-        setDiaryEntries(response.data);
+        setDiaryEntries(response.data.data); // .data를 한 번 더 붙여서 배열을 꺼내온다.
         console.log("저장된 상태 확인:", diaryEntries); // 추가된 로그
       } catch (error) {
         console.error('일기 조회 오류:', error);
