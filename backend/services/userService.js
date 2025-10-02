@@ -28,8 +28,15 @@ const UserService = {
     async updateUser(userId, userDetails) {
         const user = await User.findByPk(userId);
         if (!user) throw new Error('User not found');
+
+        // 비밀번호를 제외한 나머지 정보 먼저 업데이트
         Object.assign(user, userDetails);
+
+        // 만약 요청 body에 password가 포함되어 있다면, 그것만 따로 암호화해서 업데이트
+        if (userDetails.password) {
         user.password = await bcrypt.hash(userDetails.password, 10);
+        }
+        
         await user.save();
         return user;
     },
