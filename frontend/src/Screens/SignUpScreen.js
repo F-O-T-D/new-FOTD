@@ -86,7 +86,7 @@ const SignUpScreen = () => {
              `${API_BASE_URL}/api/auth/check-email/${form.email}`
           );
 
-          if (emailCheckResponse.data.exists) {
+          if (emailCheckResponse.data.data.exists) {
             Alert.alert('이미 가입된 이메일입니다.');
           } else {
             console.log("🛠️ 회원가입 요청 데이터:", {
@@ -120,7 +120,14 @@ const SignUpScreen = () => {
           }
         }
       } catch (error) {
-        Alert.alert('회원가입 오류');
+          // 1. 콘솔에 자세한 오류 내용 전체를 출력
+          console.error('--- SIGNUP CATCH ERROR ---:', JSON.stringify(error.response?.data || error.message));
+
+          // 2. Alert 창에도 서버가 보낸 에러 메시지를 보여준다.
+          Alert.alert(
+              '회원가입 오류',
+              error.response?.data?.error || error.message || '알 수 없는 오류가 발생했습니다.'
+          );
       }
       dispatch({ type: AuthFormTypes.TOGGLE_LOADING });
     }
