@@ -1,7 +1,7 @@
 import Constants from "expo-constants";
 
 // 개발 PC의 실제 IP 주소 (Wi-Fi IPv4 주소를 직접 입력)
-const LOCAL_IP = "10.14.19.219"; // PC의 IP 주소를 수동 설정
+const LOCAL_IP = "100.114.50.58"; // PC의 IP 주소를 수동 설정
 
 // Expo 환경에서 실행될 때 개발 PC의 IP 자동 감지
 export const API_BASE_URL = Constants.manifest?.debuggerHost

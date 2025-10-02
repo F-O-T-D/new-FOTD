@@ -45,7 +45,8 @@ const muckitController = {
 
         async deleteMuckit(req, res) {  // deleteStore -> deleteMuckit
         try {
-            await muckitService.deleteMuckit(req.params.id);
+            const { muckitId } = req.params; 
+            await muckitService.deleteMuckit(muckitId);
             res.status(200).json({ success: true, message: 'Muckit deleted successfully' });
         } catch (error) {
             console.error('먹킷리스트 삭제 오류:', error);
