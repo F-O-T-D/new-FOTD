@@ -71,7 +71,7 @@ const authController = {
             console.log(`이메일 중복 확인 요청: ${email}`);
 
             const user = await userService.findUserByEmail(email);
-            res.json({ exists: !!user });
+            res.status(200).json({ success: true, data: { exists: !!user } }); 
         } catch (error) {
             console.error(error);
             res.status(500).json({ success: false, error: 'Error checking email' });
