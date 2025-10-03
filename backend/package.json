@@ -2,7 +2,7 @@
   "name": "fotd",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "nodemon server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -16,5 +16,8 @@
     "express-list-endpoints": "^7.1.1",
     "mysql2": "^3.14.3",
     "sequelize": "^6.37.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
   }
 }

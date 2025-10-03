@@ -63,7 +63,7 @@ const CalendarScreen = () => {
         const response = await axios.get(`${config.API_BASE_URL}/api/users/${user.id}/diaries`, {
           params: { date: date }
         });
-        setDailyData(response.data);
+        setDailyData(response.data.data);
       } catch (error) {
         console.error('일기 데이터를 불러오는 데 실패했습니다:', error);
         setDailyData([]);
