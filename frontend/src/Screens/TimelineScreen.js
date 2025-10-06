@@ -1,6 +1,6 @@
 // screens/TodayTableScreen.js
 import { React, useState, useCallback } from 'react';
-import { View, Text, StyleSheet, SectionList, Image, SafeAreaView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, SectionList, Image, SafeAreaView, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import { useUserState } from '../Contexts/UserContext';
@@ -56,12 +56,41 @@ const TodayTableScreen = () => {
         }, [user])
     );
 
+    //삭제 함수
+    const handleDelete = (diaryId) => {
+        Alert.alert(
+            "일기 삭제", // 제목
+            "정말로 이 기록을 삭제하시겠어요? 😢", // 내용
+            [
+                { text: "취소", style: "cancel" },
+                {
+                    text: "삭제",
+                    onPress: async () => {
+                        try {
+                            // 백엔드에 삭제 API 요청
+                            await axios.delete(`${config.API_BASE_URL}/api/users/${user.id}/diaries/${diaryId}`);
+                            // 성공 시, 화면에서 해당 일기를 즉시 제거 (새로고침 효과)
+                            fetchAllDiaries(); 
+                        } catch (error) {
+                            console.error('일기 삭제 오류:', error);
+                            Alert.alert("삭제 실패", "오류가 발생했습니다.");
+                        }
+                    },
+                    style: "destructive", // '삭제' 버튼을 빨간색으로 표시 (iOS)
+                },
+            ]
+        );
+    };
+
+
     const renderDiaryItem = ({ item }) => (
-        <View style={styles.diaryItem}>
-            <Text style={styles.diaryTitle}>{item.title || "제목 없음"}</Text>
-            {item.image && <Image source={{ uri: item.image }} style={styles.image} />}
-            <Text style={styles.diaryContent}>{item.content}</Text>
-        </View>
+        <TouchableOpacity onLongPress={() => handleDelete(item.id)}>
+            <View style={styles.diaryItem}>
+                <Text style={styles.diaryTitle}>{item.title || "제목 없음"}</Text>
+                {item.image && <Image source={{ uri: item.image }} style={styles.image} />}
+                <Text style={styles.diaryContent}>{item.content}</Text>
+            </View>
+        </TouchableOpacity>
     );
 
     return (

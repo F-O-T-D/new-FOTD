@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';  // useState, useEffect 추가!
-import { View, Text, TouchableOpacity, StyleSheet, FlatList, Image } from 'react-native';
-import { SafeAreaView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, FlatList, Image, SafeAreaView, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import { useUserState } from '../Contexts/UserContext';  // 유저 상태 가져오기
@@ -48,6 +47,32 @@ const DiaryListScreen = ({ route }) => {
       }
     };
   
+    //일기 삭제 처리
+    const handleDelete = (diaryId) => {
+        Alert.alert(
+            "일기 삭제",
+            "정말로 이 기록을 삭제하시겠어요?",
+            [
+                { text: "취소", style: "cancel" },
+                {
+                    text: "삭제",
+                    onPress: async () => {
+                        try {
+                            await axios.delete(`${config.API_BASE_URL}/api/users/${user.id}/diaries/${diaryId}`);
+                            // 성공 시, 목록을 새로고침합니다.
+                            fetchDiaryEntries(); 
+                        } catch (error) {
+                            console.error('일기 삭제 오류:', error);
+                            Alert.alert("삭제 실패", "오류가 발생했습니다.");
+                        }
+                    },
+                    style: "destructive",
+                },
+            ]
+        );
+    };
+
+
     return (
       <SafeAreaView style={styles.container}>
           {/* 날짜 띄우는 부분 */}
@@ -63,11 +88,13 @@ const DiaryListScreen = ({ route }) => {
                   extraData={diaryEntries} // 상태 변경 감지
                   keyExtractor={(item) => item.id.toString()}
                   renderItem={({ item }) => (
-                      <View style={styles.diaryItem}>
-                            <Text style={styles.diaryTitle}>{item.title ? String(item.title) : "제목 없음"}</Text>
-                            {item.image && <Image source={{ uri: item.image }} style={styles.image} />}
-                          <Text style={styles.diaryContent}>{item.content}</Text>
-                      </View>
+                     <TouchableOpacity onLongPress={() => handleDelete(item.id)}>
+                        <View style={styles.diaryItem}>
+                              <Text style={styles.diaryTitle}>{item.title ? String(item.title) : "제목 없음"}</Text>
+                              {item.image && <Image source={{ uri: item.image }} style={styles.image} />}
+                            <Text style={styles.diaryContent}>{item.content}</Text>
+                        </View>
+                      </TouchableOpacity>
                   )}
                   ItemSeparatorComponent={() => <View style={styles.separator} />} // 항목 간격 추가
                   contentContainerStyle={{ paddingBottom: 30 }} // 하단 여백 추가하여 버튼 가리지 않기
