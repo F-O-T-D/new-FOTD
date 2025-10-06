@@ -1,6 +1,14 @@
 const Diary = require('../models/diary');  // Diary 모델 가져오기
 
-const diaryService = {  // 기존에 `diaryService`가 아니라 `DiaryService`로 선언됨
+const diaryService = {
+    // userId가 일치하는 모든 일기를 찾아 최신순으로 정렬
+    async getAllDiariesByUserId(userId) {
+        return await Diary.findAll({
+            where: { userId },
+            order: [['date', 'DESC']],
+        });
+    },
+    
     // 특정 날짜의 일기 목록 가져오기
     async getDiariesByDate(userId, date) {
         return await Diary.findAll({ where: { userId, date } });

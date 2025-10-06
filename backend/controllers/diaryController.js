@@ -6,7 +6,13 @@ const diaryController = {
         try {
             const { userId } = req.params;
             const { date } = req.query;  // 날짜를 쿼리 파라미터에서 가져옴
-            const diaries = await diaryService.getDiariesByDate(userId, date);
+            
+            let diaries;
+            if (date) { //date 쿼리가 있으면 특정 날짜의 일기만 조회
+                diaries = await diaryService.getDiariesByDate(userId, date);
+            } else { //date 쿼리가 없으면 모든 일기 조회
+                diaries = await diaryService.getAllDiariesByUserId(userId);
+            }
             res.status(200).json({ success: true, data: diaries });
         } catch (error) {
             console.error('일기 목록 조회 오류:', error);
