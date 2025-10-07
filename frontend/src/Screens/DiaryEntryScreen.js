@@ -6,6 +6,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { useUserState } from '../Contexts/UserContext';
 import axios from 'axios';
 import config from '../config';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+
 
 const DiaryEntryScreen = ({ route }) => {
   const navigation = useNavigation();
@@ -17,9 +19,27 @@ const DiaryEntryScreen = ({ route }) => {
   const [content, setContent] = useState(diaryToEdit?.content || '');
   const [foodImage, setFoodImage] = useState(diaryToEdit?.image || null);
 
+  // 날짜 선택기(모달)의 표시 여부를 관리할 state 추가
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+
   const [user] = useUserState();
   const scrollRef = useRef(null);
   const scaleAnim = useRef(new Animated.Value(1)).current;
+
+  //날짜 선택기 관련 함수들
+  const showDatePicker = () => {
+      setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+      setDatePickerVisibility(false);
+  };
+
+  const handleConfirmDate = (selectedDate) => {
+      // 선택된 날짜를 'YYYY-MM-DD' 형식으로 변환하여 state에 저장
+      setDate(selectedDate.toISOString().split('T')[0]);
+      hideDatePicker();
+  };
 
 
   // 이미지 선택 함수
@@ -103,10 +123,10 @@ const DiaryEntryScreen = ({ route }) => {
         >
           <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             <View style={styles.contentWrapper}>
-              {/* 날짜 태그 */}
-              <View style={styles.dateTag}>
+              {/* ❗️ 4. 날짜 태그를 View에서 TouchableOpacity로 변경하고 onPress 추가 */}
+              <TouchableOpacity onPress={showDatePicker} style={styles.dateTag}>
                   <Text style={styles.dateText}>{date}</Text>
-              </View>
+              </TouchableOpacity>
 
               {/* 제목 입력란 */}
               <TextInput
@@ -154,6 +174,16 @@ const DiaryEntryScreen = ({ route }) => {
           </TouchableWithoutFeedback>
         </ScrollView>
       </KeyboardAvoidingView>
+
+      {/*화면의 아무 곳에나 날짜 선택기 모달 컴포넌트 추가 */}
+      <DateTimePickerModal
+          isVisible={isDatePickerVisible}
+          mode="date"
+          onConfirm={handleConfirmDate}
+          onCancel={hideDatePicker}
+          confirmTextIOS="확인"
+          cancelTextIOS="취소"
+      />
     </View>
   );
 };
