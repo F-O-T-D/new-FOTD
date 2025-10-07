@@ -56,35 +56,45 @@ const TodayTableScreen = () => {
         }, [user])
     );
 
-    //삭제 함수
-    const handleDelete = (diaryId) => {
+    // 기존 handleDelete 함수는 이제 이 함수로 통합
+    const handleLongPress = (diary) => {
         Alert.alert(
-            "일기 삭제", // 제목
-            "정말로 이 기록을 삭제하시겠어요? 😢", // 내용
+            "일기 관리", // 제목
+            "이 기록에 대해 무엇을 할까요? 🤔",
             [
-                { text: "취소", style: "cancel" },
+                // 옵션 1: 수정하기
+                {
+                    text: "수정",
+                    onPress: () => {
+                        // DiaryEntryScreen으로 이동하며 수정할 diary 객체 전체를 전달
+                        navigation.navigate('DiaryEntryScreen', { diaryToEdit: diary });
+                    },
+                },
+                // 옵션 2: 삭제하기
                 {
                     text: "삭제",
                     onPress: async () => {
                         try {
-                            // 백엔드에 삭제 API 요청
-                            await axios.delete(`${config.API_BASE_URL}/api/users/${user.id}/diaries/${diaryId}`);
-                            // 성공 시, 화면에서 해당 일기를 즉시 제거 (새로고침 효과)
-                            fetchAllDiaries(); 
+                            // 기존 handleDelete 함수의 핵심 로직이 여기로 옮겨진 것
+                            await axios.delete(`${config.API_BASE_URL}/api/users/${user.id}/diaries/${diary.id}`);
+                            // 목록 새로고침
+                            fetchAllDiaries();
                         } catch (error) {
                             console.error('일기 삭제 오류:', error);
                             Alert.alert("삭제 실패", "오류가 발생했습니다.");
                         }
                     },
-                    style: "destructive", // '삭제' 버튼을 빨간색으로 표시 (iOS)
+                    style: "destructive",
                 },
+                // 옵션 3: 취소
+                { text: "취소", style: "cancel" },
             ]
         );
     };
 
 
     const renderDiaryItem = ({ item }) => (
-        <TouchableOpacity onLongPress={() => handleDelete(item.id)}>
+        <TouchableOpacity onLongPress={() => handleLongPress(item)}>
             <View style={styles.diaryItem}>
                 <Text style={styles.diaryTitle}>{item.title || "제목 없음"}</Text>
                 {item.image && <Image source={{ uri: item.image }} style={styles.image} />}

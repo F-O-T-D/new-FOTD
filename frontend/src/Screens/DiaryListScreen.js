@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';  // useState, useEffect 추가!
+import { useFocusEffect } from '@react-navigation/native';
 import { View, Text, TouchableOpacity, StyleSheet, FlatList, Image, SafeAreaView, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
@@ -22,10 +23,6 @@ const DiaryListScreen = ({ route }) => {
     const [user] = useUserState();  // 현재 로그인된 유저 가져오기
 
     console.log("👤 현재 로그인한 유저:", user); // 유저 데이터 로그 찍기
-
-    useEffect(() => {
-      fetchDiaryEntries();
-  }, [date]); // date 변경될 때마다 다시 fetch
   
     const fetchDiaryEntries = async () => {
       try {
@@ -47,20 +44,39 @@ const DiaryListScreen = ({ route }) => {
       }
     };
   
-    //일기 삭제 처리
-    const handleDelete = (diaryId) => {
+
+    useFocusEffect(
+        React.useCallback(() => {
+            console.log("DiaryListScreen이 포커스됨, 데이터를 새로고침합니다.");
+            fetchDiaryEntries();
+        }, [user, date]) // user나 date가 바뀐 경우에도 대응
+    );
+
+    
+    //일기 수정, 삭제 처리
+    // 기존 handleDelete 함수는 이제 이 함수로 통합
+    const handleLongPress = (diary) => {
         Alert.alert(
-            "일기 삭제",
-            "정말로 이 기록을 삭제하시겠어요?",
+            "일기 관리", // 제목
+            "이 기록에 대해 무엇을 할까요? 🤔",
             [
-                { text: "취소", style: "cancel" },
+                // 옵션 1: 수정하기
+                {
+                    text: "수정",
+                    onPress: () => {
+                        // DiaryEntryScreen으로 이동하며 수정할 diary 객체 전체를 전달
+                        navigation.navigate('DiaryEntryScreen', { diaryToEdit: diary });
+                    },
+                },
+                // 옵션 2: 삭제하기
                 {
                     text: "삭제",
                     onPress: async () => {
                         try {
-                            await axios.delete(`${config.API_BASE_URL}/api/users/${user.id}/diaries/${diaryId}`);
-                            // 성공 시, 목록을 새로고침합니다.
-                            fetchDiaryEntries(); 
+                            // 기존 handleDelete 함수의 핵심 로직이 여기로 옮겨진 것
+                            await axios.delete(`${config.API_BASE_URL}/api/users/${user.id}/diaries/${diary.id}`);
+                            // 목록 새로고침
+                            fetchAllDiaries();
                         } catch (error) {
                             console.error('일기 삭제 오류:', error);
                             Alert.alert("삭제 실패", "오류가 발생했습니다.");
@@ -68,6 +84,8 @@ const DiaryListScreen = ({ route }) => {
                     },
                     style: "destructive",
                 },
+                // 옵션 3: 취소
+                { text: "취소", style: "cancel" },
             ]
         );
     };
@@ -88,7 +106,7 @@ const DiaryListScreen = ({ route }) => {
                   extraData={diaryEntries} // 상태 변경 감지
                   keyExtractor={(item) => item.id.toString()}
                   renderItem={({ item }) => (
-                     <TouchableOpacity onLongPress={() => handleDelete(item.id)}>
+                     <TouchableOpacity onLongPress={() => handleLongPress(item)}>
                         <View style={styles.diaryItem}>
                               <Text style={styles.diaryTitle}>{item.title ? String(item.title) : "제목 없음"}</Text>
                               {item.image && <Image source={{ uri: item.image }} style={styles.image} />}

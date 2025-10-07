@@ -30,6 +30,17 @@ const diaryService = {
         });
     },
 
+
+    async updateDiary(diaryId, updatedData) {
+        const diary = await Diary.findByPk(diaryId);
+        if (!diary) {
+            return null; // 수정할 일기가 없으면 null 반환
+        }
+        // 찾은 일기 객체에 수정된 데이터를 덮어씌움
+        await diary.update(updatedData);
+        return diary;
+    },
+
     // 일기 삭제
     async deleteDiary(diaryId) {
         return await Diary.destroy({ where: { id: diaryId } });

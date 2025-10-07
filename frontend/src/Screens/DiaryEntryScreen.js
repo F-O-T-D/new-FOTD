@@ -8,14 +8,19 @@ import axios from 'axios';
 import config from '../config';
 
 const DiaryEntryScreen = ({ route }) => {
-  const { date } = route.params || {};  
   const navigation = useNavigation();
-  const [foodImage, setFoodImage] = useState(null);
-  const [title, setTitle] = useState(''); // 제목 추가
-  const [content, setContent] = useState('');
-  const scaleAnim = useRef(new Animated.Value(1)).current;
+  const { diaryToEdit, date: newDate } = route.params || {}; //수정할 데이터 or 새 글의 날짜를 받아옴
+  const isEditing = !!diaryToEdit; //수정할 데이터가 있다면 수정모드
+
+  const [date, setDate] = useState(diaryToEdit?.date || newDate || new Date().toISOString().split('T')[0]);
+  const [title, setTitle] = useState(diaryToEdit?.title || '');
+  const [content, setContent] = useState(diaryToEdit?.content || '');
+  const [foodImage, setFoodImage] = useState(diaryToEdit?.image || null);
+
   const [user] = useUserState();
-  const scrollRef = useRef(null); //ScrollView를 제어하기 위한 ref
+  const scrollRef = useRef(null);
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+
 
   // 이미지 선택 함수
   const pickImage = async () => {
@@ -48,28 +53,30 @@ const DiaryEntryScreen = ({ route }) => {
   // "저장하기" 버튼을 눌렀을 때 서버로 데이터 전송
   const handleSave = async () => {
     Keyboard.dismiss();  // 키보드 먼저 닫기
-    try {
-      if (!user?.id) {
-        console.warn("userId가 없음! 저장 불가");
-        return;
-      }
 
-      const newDiary = {
-        userId: user.id,
-        date,
-        title,
-        content,
-        image: foodImage || null,
-      };
-      console.log("저장 요청 데이터:", newDiary);
-      const response = await axios.post(`${config.API_BASE_URL}/api/users/${user.id}/diaries`, newDiary);
-      console.log("저장 완료:", response.data);
-
-      // 저장 후 DiaryListScreen으로 이동
-      navigation.navigate("DiaryListScreen", { date });
-    } catch (error) {
-      console.error("저장 중 오류 발생:", error);
+    if (!user?.id) {
+      console.warn("userId가 없음! 저장 불가");
+      return;
     }
+      try {
+        const diaryData = { //API에 보낼 데이터
+          date, 
+          title, 
+          content, 
+          image: foodImage };
+
+      if (isEditing) {
+          // '수정 모드'일 경우: PATCH API 호출
+          await axios.patch(`${config.API_BASE_URL}/api/users/${user.id}/diaries/${diaryToEdit.id}`, diaryData);
+      } else {
+          // '새 글 작성' 모드일 경우: POST API 호출
+          await axios.post(`${config.API_BASE_URL}/api/users/${user.id}/diaries`, diaryData);
+      }
+        // 저장 후 이전 화면으로 이동
+        navigation.goBack();
+      } catch (error) {
+        console.error("저장/수정 중 오류 발생:", error);
+      }
   };
 
   return (
@@ -84,12 +91,12 @@ const DiaryEntryScreen = ({ route }) => {
             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                 <Ionicons name="chevron-back" size={28} color="#333" />
             </TouchableOpacity>
-            <Text style={styles.headerTitle}>일기 쓰기</Text>
+            <Text style={styles.headerTitle}>{isEditing ? '일기 수정하기' : '일기 쓰기'}</Text>
             <View style={{ width: 30 }} />
         </View>
 
         <ScrollView
-            ref={scrollRef} // ❗️추가: ScrollView에 ref 연결
+            ref={scrollRef} // 추가: ScrollView에 ref 연결
             style={{ flex: 1 }}
             contentContainerStyle={styles.scrollContainer}
             keyboardShouldPersistTaps="handled"
@@ -164,7 +171,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingBottom: 40,
   },
-  contentWrapper: { // ❗️추가: 실제 콘텐츠를 감싸는 래퍼
+  contentWrapper: { //실제 콘텐츠를 감싸는 래퍼
     alignItems: 'center',
   },
   header: {

@@ -52,6 +52,24 @@ const diaryController = {
         }
     },
 
+    //일기 수정
+    async updateDiary(req, res) {
+        try {
+            const { diaryId } = req.params;
+            const updatedData = req.body; // 수정할 내용
+
+            const updatedDiary = await diaryService.updateDiary(diaryId, updatedData);
+
+            if (!updatedDiary) {
+                return res.status(404).json({ success: false, error: 'Diary not found' });
+            }
+            res.status(200).json({ success: true, data: updatedDiary });
+        } catch (error) {
+            console.error('일기 수정 오류:', error);
+            res.status(500).json({ success: false, error: 'Error updating diary' });
+        }
+    },
+
     // 일기 삭제
     async deleteDiary(req, res) {
         try {

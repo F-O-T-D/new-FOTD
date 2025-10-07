@@ -35,6 +35,9 @@ router.get('/', diaryController.getDiaries);
 // GET /api/users/:userId/diaries/:diaryId
 router.get('/:diaryId', diaryController.getDiaryById);
 
+// PATCH /api/users/:userId/diaries/:diaryId
+router.patch('/:diaryId', diaryController.updateDiary);
+
 // DELETE /api/users/:userId/diaries/:diaryId
 router.delete('/:diaryId', diaryController.deleteDiary);
 
