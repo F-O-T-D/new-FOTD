@@ -52,7 +52,7 @@ const DiaryListScreen = ({ route }) => {
         }, [user, date]) // user나 date가 바뀐 경우에도 대응
     );
 
-    
+
     //일기 수정, 삭제 처리
     // 기존 handleDelete 함수는 이제 이 함수로 통합
     const handleLongPress = (diary) => {
@@ -76,7 +76,7 @@ const DiaryListScreen = ({ route }) => {
                             // 기존 handleDelete 함수의 핵심 로직이 여기로 옮겨진 것
                             await axios.delete(`${config.API_BASE_URL}/api/users/${user.id}/diaries/${diary.id}`);
                             // 목록 새로고침
-                            fetchAllDiaries();
+                            fetchDiaryEntries();
                         } catch (error) {
                             console.error('일기 삭제 오류:', error);
                             Alert.alert("삭제 실패", "오류가 발생했습니다.");
@@ -108,14 +108,19 @@ const DiaryListScreen = ({ route }) => {
                   renderItem={({ item }) => (
                      <TouchableOpacity onLongPress={() => handleLongPress(item)}>
                         <View style={styles.diaryItem}>
-                              <Text style={styles.diaryTitle}>{item.title ? String(item.title) : "제목 없음"}</Text>
-                              {item.image && <Image source={{ uri: item.image }} style={styles.image} />}
-                            <Text style={styles.diaryContent}>{item.content}</Text>
-                        </View>
-                      </TouchableOpacity>
-                  )}
-                  ItemSeparatorComponent={() => <View style={styles.separator} />} // 항목 간격 추가
-                  contentContainerStyle={{ paddingBottom: 30 }} // 하단 여백 추가하여 버튼 가리지 않기
+                          <View style={styles.itemHeader}>
+                              <Text style={styles.dateText}>{item.date}</Text>
+                              {/* 평점(이모티콘)이 있으면 표시 */}
+                              {item.rating && <Text style={styles.ratingEmoji}>{item.rating}</Text>}
+                          </View>
+                          <Text style={styles.diaryTitle}>{item.title ? String(item.title) : "제목 없음"}</Text>
+                          {item.image && <Image source={{ uri: item.image }} style={styles.image} />}
+                        <Text style={styles.diaryContent}>{item.content}</Text>
+                    </View>
+                  </TouchableOpacity>
+              )}
+              ItemSeparatorComponent={() => <View style={styles.separator} />} // 항목 간격 추가
+              contentContainerStyle={{ paddingBottom: 30 }} // 하단 여백 추가하여 버튼 가리지 않기
 
               />
           )}
@@ -223,6 +228,22 @@ diaryContent: {
     fontSize: 18,
     fontWeight: 'bold',
   },
+
+      itemHeader: {
+        width: '100%',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 10,
+    },
+    dateText: { 
+        fontSize: 14, 
+        fontWeight: 'bold', 
+        color: '#888', 
+    },
+    ratingEmoji: {
+        fontSize: 20,
+    }
 });
 
 

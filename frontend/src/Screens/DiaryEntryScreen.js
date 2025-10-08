@@ -9,6 +9,8 @@ import config from '../config';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 
+const moodEmoticons = ['😃', '😊', '😐', '😢', '😠']; // 이모티콘 목록
+
 const DiaryEntryScreen = ({ route }) => {
   const navigation = useNavigation();
   const { diaryToEdit, date: newDate } = route.params || {}; //수정할 데이터 or 새 글의 날짜를 받아옴
@@ -18,7 +20,8 @@ const DiaryEntryScreen = ({ route }) => {
   const [title, setTitle] = useState(diaryToEdit?.title || '');
   const [content, setContent] = useState(diaryToEdit?.content || '');
   const [foodImage, setFoodImage] = useState(diaryToEdit?.image || null);
-
+  // 선택된 평점을 저장할 state 추가
+  const [rating, setRating] = useState(diaryToEdit?.rating || null);
   // 날짜 선택기(모달)의 표시 여부를 관리할 state 추가
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
@@ -83,7 +86,8 @@ const DiaryEntryScreen = ({ route }) => {
           date, 
           title, 
           content, 
-          image: foodImage };
+          image: foodImage,
+          rating };
 
       if (isEditing) {
           // '수정 모드'일 경우: PATCH API 호출
@@ -123,7 +127,7 @@ const DiaryEntryScreen = ({ route }) => {
         >
           <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             <View style={styles.contentWrapper}>
-              {/* ❗️ 4. 날짜 태그를 View에서 TouchableOpacity로 변경하고 onPress 추가 */}
+              {/* 날짜 태그를 View에서 TouchableOpacity로 변경하고 onPress 추가 */}
               <TouchableOpacity onPress={showDatePicker} style={styles.dateTag}>
                   <Text style={styles.dateText}>{date}</Text>
               </TouchableOpacity>
@@ -158,6 +162,25 @@ const DiaryEntryScreen = ({ route }) => {
                     }, 50); // 키보드가 올라올 시간.
                 }}
               />
+                    {/* 이모티콘 선택 UI 추가 */}
+                    <View style={styles.ratingContainer}>
+                        <Text style={styles.ratingLabel}>이 음식, 어떠셨나요?</Text>
+                        <View style={styles.emoticonContainer}>
+                            {moodEmoticons.map((emo) => (
+                                <TouchableOpacity 
+                                    key={emo} 
+                                    onPress={() => setRating(emo)}
+                                    style={[
+                                        styles.emoticonButton,
+                                        rating === emo && styles.selectedEmoticon // 선택된 이모티콘 스타일 적용
+                                    ]}
+                                >
+                                    <Text style={styles.emoticon}>{emo}</Text>
+                                </TouchableOpacity>
+                            ))}
+                        </View>
+                    </View>
+
 
               {/* 저장 버튼 (애니메이션 추가) */}
               <Animated.View style={[styles.saveButtonContainer, { transform: [{ scale: scaleAnim }] }]}>
@@ -308,6 +331,36 @@ const styles = StyleSheet.create({
       fontSize: 18,
       fontWeight: 'bold',
   },
+      ratingContainer: {
+        width: '100%',
+        marginTop: 10,
+        marginBottom: 20,
+    },
+    ratingLabel: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#555',
+        marginBottom: 10,
+        textAlign: 'center',
+    },
+    emoticonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+    },
+    emoticonButton: {
+        padding: 8,
+        borderRadius: 50,
+        borderWidth: 2,
+        borderColor: 'transparent', // 기본 테두리는 투명
+    },
+    selectedEmoticon: {
+        borderColor: '#FF8C42', // 선택 시 테두리 색상
+        backgroundColor: 'rgba(255, 140, 66, 0.1)',
+    },
+    emoticon: {
+        fontSize: 32,
+    },
 });
 
 export default DiaryEntryScreen;

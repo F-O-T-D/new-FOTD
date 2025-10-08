@@ -20,13 +20,14 @@ const diaryService = {
     },
 
     // 일기 추가
-    async addDiary(userId, date, title, content, image) {
+    async addDiary(userId, date, title, content, image, rating) {
         return await Diary.create({
             userId,
             date,
             title,
             content,
             image, // 이미지 URL 저장 가능
+            rating,
         });
     },
 

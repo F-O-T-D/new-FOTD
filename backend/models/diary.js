@@ -34,8 +34,14 @@ module.exports = class Diary extends Model {
                 image: {
                     type: DataTypes.STRING,
                     allowNull: true,
-                }
+                },
+
+                rating: {
+                    type: DataTypes.STRING, // 이모티콘은 문자열로 저장
+                    allowNull: true,      // 평점은 선택 사항일 수 있으므로 null 허용
+                }   
             },
+            
             {
                 sequelize, // Sequelize 인스턴스를 명확히 전달
                 modelName: 'Diary',

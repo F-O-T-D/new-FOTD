@@ -96,6 +96,11 @@ const TodayTableScreen = () => {
     const renderDiaryItem = ({ item }) => (
         <TouchableOpacity onLongPress={() => handleLongPress(item)}>
             <View style={styles.diaryItem}>
+                <View style={styles.itemHeader}>
+                    <Text style={styles.dateText}>{item.date}</Text>
+                    {/* 평점(이모티콘)이 있으면 표시 */}
+                    {item.rating && <Text style={styles.ratingEmoji}>{item.rating}</Text>}
+                </View>
                 <Text style={styles.diaryTitle}>{item.title || "제목 없음"}</Text>
                 {item.image && <Image source={{ uri: item.image }} style={styles.image} />}
                 <Text style={styles.diaryContent}>{item.content}</Text>
@@ -158,6 +163,21 @@ const styles = StyleSheet.create({
     itemSeparator: { height: 15 },
     sectionSeparator: { height: 10 },
     fabButton: { width: 60, height: 60, backgroundColor: '#FF8C42', borderRadius: 30, position: 'absolute', bottom: 30, right: 20, justifyContent: 'center', alignItems: 'center', shadowColor: '#000', shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.2, shadowRadius: 5, elevation: 5 },
+    itemHeader: {
+        width: '100%',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 10,
+    },
+    dateText: { 
+        fontSize: 14, 
+        fontWeight: 'bold', 
+        color: '#888', 
+    },
+    ratingEmoji: {
+        fontSize: 20,
+    }
 });
 
 export default TodayTableScreen;
