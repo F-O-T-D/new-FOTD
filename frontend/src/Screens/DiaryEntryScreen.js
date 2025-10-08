@@ -50,7 +50,7 @@ const DiaryEntryScreen = ({ route }) => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      aspect: [4, 3],
+      aspect: [1, 1],
       quality: 1,
     });
 
@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     width: '100%',
-    height: 300,
+    aspectRatio: 1,
     backgroundColor: '#F8F8F8',
     justifyContent: 'center',
     alignItems: 'center',

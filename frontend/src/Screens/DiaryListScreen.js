@@ -6,6 +6,7 @@ import axios from 'axios';
 import { useUserState } from '../Contexts/UserContext';  // 유저 상태 가져오기
 import { Ionicons } from '@expo/vector-icons'; // 아이콘 추가
 import config from '../config';
+import DiaryItem from '../Components/DiaryItem';
 
 const DiaryListScreen = ({ route }) => {
 
@@ -106,24 +107,15 @@ const DiaryListScreen = ({ route }) => {
                   extraData={diaryEntries} // 상태 변경 감지
                   keyExtractor={(item) => item.id.toString()}
                   renderItem={({ item }) => (
-                     <TouchableOpacity onLongPress={() => handleLongPress(item)}>
-                        <View style={styles.diaryItem}>
-                          <View style={styles.itemHeader}>
-                              <Text style={styles.dateText}>{item.date}</Text>
-                              {/* 평점(이모티콘)이 있으면 표시 */}
-                              {item.rating && <Text style={styles.ratingEmoji}>{item.rating}</Text>}
-                          </View>
-                          <Text style={styles.diaryTitle}>{item.title ? String(item.title) : "제목 없음"}</Text>
-                          {item.image && <Image source={{ uri: item.image }} style={styles.image} />}
-                        <Text style={styles.diaryContent}>{item.content}</Text>
-                    </View>
-                  </TouchableOpacity>
-              )}
-              ItemSeparatorComponent={() => <View style={styles.separator} />} // 항목 간격 추가
-              contentContainerStyle={{ paddingBottom: 30 }} // 하단 여백 추가하여 버튼 가리지 않기
-
-              />
-          )}
+                        <DiaryItem 
+                            item={item} 
+                            onLongPress={() => handleLongPress(item)} 
+                        />
+                    )}
+                    ItemSeparatorComponent={() => <View style={styles.separator} />}
+                    contentContainerStyle={{ paddingBottom: 100 }}
+                />
+            )}
     
            {/* 새 일기 작성 버튼 */}
            <TouchableOpacity 
@@ -136,115 +128,162 @@ const DiaryListScreen = ({ route }) => {
   );
 };
 
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: '#FDF6EC',
+//     paddingHorizontal: 16,
+//     alignItems: 'center',
+//   },
+//   dateFloating: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//     paddingVertical: 8,
+//     paddingHorizontal: 16,
+//     backgroundColor: 'rgba(255, 255, 255, 0.91)', 
+//     borderRadius: 20,
+//     shadowColor: '#000',
+//     shadowOffset: { width: 0, height: 2 },
+//     shadowOpacity: 0.15,
+//     shadowRadius: 5,
+//     elevation: 5,
+//     marginTop: 10,
+//     marginBottom: 15,
+//   },
+//   dateText: {
+//     fontSize: 16,
+//     fontWeight: 'bold',
+//     color: '#FF8C42',
+//     marginLeft: 5,  // 아이콘과 간격
+//   },
+//   emptyMessage: {
+//     fontSize: 16,
+//     color: '#999',
+//     marginTop: 20,
+//   },
+//   diaryItem: {
+//     width: '100%',  // 부모 요소와 동일한 너비
+//     flexDirection: 'row',
+//     padding: 15,
+//     backgroundColor: '#FFF',
+//     borderRadius: 12,
+//     shadowColor: '#000',
+//     shadowOffset: { width: 0, height: 2 },
+//     shadowOpacity: 0.1,
+//     shadowRadius: 4,
+//     flexDirection: 'column', //이미지+텍스트
+//     alignItems: 'center',
+//     paddingHorizontal: 20, // 좌우 여백 추가
+// },
+// diaryTitle: {
+//   fontSize: 18,
+//   fontWeight: 'bold',
+//   color: '#000000', 
+//   textAlign: 'center',
+//   marginBottom: 15,
+//   fontFamily: 'System', // 기본 폰트 사용 가능
+// },
+// diaryContent: {
+//   fontSize: 16,
+//   color: '#555',
+//   textAlign: 'center',
+//   lineHeight: 22,
+//   marginTop: 15,
+// },
+//   image: {
+//     width: '100%',
+//     height: undefined,  // 고정 높이 제거
+//     aspectRatio: 1,   
+//     borderRadius: 10,
+//     resizeMode: 'cover', 
+// },
+//   separator: {
+//     height: 15, // 아이템 간격 추가
+//   },
+//   fabButton: {
+//     width: 60,
+//     height: 60,
+//     backgroundColor: 'rgba(255, 140, 66, 0.85)',
+//     borderRadius: 30,
+//     position: 'absolute',
+//     bottom: 30,
+//     right: 20,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     shadowColor: '#000',
+//     shadowOffset: { width: 0, height: 3 },
+//     shadowOpacity: 0.2,
+//     shadowRadius: 5,
+//   },
+//   addButtonText: {
+//     color: 'white',
+//     fontSize: 18,
+//     fontWeight: 'bold',
+//   },
+
+//       itemHeader: {
+//         width: '100%',
+//         flexDirection: 'row',
+//         justifyContent: 'space-between',
+//         alignItems: 'center',
+//         marginBottom: 10,
+//     },
+//     dateText: { 
+//         fontSize: 14, 
+//         fontWeight: 'bold', 
+//         color: '#888', 
+//     },
+//     ratingEmoji: {
+//         fontSize: 20,
+//     }
+// });
+
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FDF6EC',
-    paddingHorizontal: 16,
-    alignItems: 'center',
-  },
-  dateFloating: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    backgroundColor: 'rgba(255, 255, 255, 0.91)', 
-    borderRadius: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 5,
-    elevation: 5,
-    marginTop: 10,
-    marginBottom: 15,
-  },
-  dateText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#FF8C42',
-    marginLeft: 5,  // 아이콘과 간격
-  },
-  emptyMessage: {
-    fontSize: 16,
-    color: '#999',
-    marginTop: 20,
-  },
-  diaryItem: {
-    width: '100%',  // 부모 요소와 동일한 너비
-    flexDirection: 'row',
-    padding: 15,
-    backgroundColor: '#FFF',
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    flexDirection: 'column', //이미지+텍스트
-    alignItems: 'center',
-    paddingHorizontal: 20, // 좌우 여백 추가
-},
-diaryTitle: {
-  fontSize: 18,
-  fontWeight: 'bold',
-  color: '#000000', 
-  textAlign: 'center',
-  marginBottom: 15,
-  fontFamily: 'System', // 기본 폰트 사용 가능
-},
-diaryContent: {
-  fontSize: 16,
-  color: '#555',
-  textAlign: 'center',
-  lineHeight: 22,
-  marginTop: 15,
-},
-  image: {
-    width: '100%',
-    height: undefined,  // 고정 높이 제거
-    aspectRatio: 1,   
-    borderRadius: 10,
-    resizeMode: 'cover', 
-},
-  separator: {
-    height: 15, // 아이템 간격 추가
-  },
-  fabButton: {
-    width: 60,
-    height: 60,
-    backgroundColor: 'rgba(255, 140, 66, 0.85)',
-    borderRadius: 30,
-    position: 'absolute',
-    bottom: 30,
-    right: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
-  },
-  addButtonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-
-      itemHeader: {
-        width: '100%',
+    container: {
+        flex: 1,
+        backgroundColor: '#FDF6EC',
+    },
+    dateFloating: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 10,
+        paddingVertical: 8,
+        paddingHorizontal: 16,
+        backgroundColor: 'rgba(255, 255, 255, 0.91)',
+        borderRadius: 20,
+        alignSelf: 'center', // 중앙 정렬
+        marginTop: 10,
+        marginBottom: 15,
+        elevation: 5,
     },
-    dateText: { 
-        fontSize: 14, 
-        fontWeight: 'bold', 
-        color: '#888', 
+    dateText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#FF8C42',
+        marginLeft: 5,
     },
-    ratingEmoji: {
-        fontSize: 20,
-    }
+    emptyMessage: {
+        flex: 1,
+        fontSize: 16,
+        color: '#999',
+        textAlign: 'center',
+        textAlignVertical: 'center',
+    },
+    separator: {
+        height: 15,
+    },
+    fabButton: {
+        width: 60,
+        height: 60,
+        backgroundColor: '#FF8C42',
+        borderRadius: 30,
+        position: 'absolute',
+        bottom: 30,
+        right: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+        elevation: 5,
+    },
 });
-
 
 export default DiaryListScreen;

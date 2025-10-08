@@ -7,6 +7,7 @@ import { useUserState } from '../Contexts/UserContext';
 import { Ionicons } from '@expo/vector-icons';
 import config from '../config';
 import { useFocusEffect } from '@react-navigation/native';
+import DiaryItem from '../Components/DiaryItem.js';
 
 // 데이터를 날짜별로 그룹핑
 const groupDiariesByDate = (diaries) => {
@@ -94,18 +95,11 @@ const TodayTableScreen = () => {
 
 
     const renderDiaryItem = ({ item }) => (
-        <TouchableOpacity onLongPress={() => handleLongPress(item)}>
-            <View style={styles.diaryItem}>
-                <View style={styles.itemHeader}>
-                    <Text style={styles.dateText}>{item.date}</Text>
-                    {/* 평점(이모티콘)이 있으면 표시 */}
-                    {item.rating && <Text style={styles.ratingEmoji}>{item.rating}</Text>}
-                </View>
-                <Text style={styles.diaryTitle}>{item.title || "제목 없음"}</Text>
-                {item.image && <Image source={{ uri: item.image }} style={styles.image} />}
-                <Text style={styles.diaryContent}>{item.content}</Text>
-            </View>
-        </TouchableOpacity>
+        <DiaryItem 
+            item={item} 
+            onLongPress={() => handleLongPress(item)} 
+            showDate={true}
+        />
     );
 
     return (
@@ -151,33 +145,101 @@ const TodayTableScreen = () => {
 };
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#FDF6EC' },
-    header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingVertical: 12, marginHorizontal: 20, marginTop: 10, marginBottom: 15, backgroundColor: '#FFFFFF', borderRadius: 15, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.08, shadowRadius: 4, elevation: 2 },
-    headerTitle: { fontSize: 20, fontWeight: 'bold', color: '#F97316', marginLeft: 10 },
-    emptyMessage: { fontSize: 16, color: '#999', textAlign: 'center', marginTop: 50 },
-    sectionHeader: { fontSize: 16, fontWeight: 'bold', color: '#333', backgroundColor: '#FDF6EC', paddingVertical: 10, paddingHorizontal: 20 },
-    diaryItem: { backgroundColor: '#FFF', borderRadius: 12, padding: 15, marginHorizontal: 20, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.08, shadowRadius: 4, elevation: 2 },
-    diaryTitle: { fontSize: 18, fontWeight: 'bold', color: '#333', marginBottom: 10 },
-    diaryContent: { fontSize: 16, color: '#555', lineHeight: 22, marginTop: 10 },
-    image: { width: '100%', aspectRatio: 1.5, borderRadius: 10, resizeMode: 'cover' },
-    itemSeparator: { height: 15 },
-    sectionSeparator: { height: 10 },
-    fabButton: { width: 60, height: 60, backgroundColor: '#FF8C42', borderRadius: 30, position: 'absolute', bottom: 30, right: 20, justifyContent: 'center', alignItems: 'center', shadowColor: '#000', shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.2, shadowRadius: 5, elevation: 5 },
-    itemHeader: {
-        width: '100%',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 10,
-    },
-    dateText: { 
-        fontSize: 14, 
-        fontWeight: 'bold', 
-        color: '#888', 
-    },
-    ratingEmoji: {
-        fontSize: 20,
-    }
+  // --- 화면 전체 레이아웃 스타일 ---
+  container: { 
+    flex: 1, 
+    backgroundColor: '#FDF6EC' 
+  },
+  header: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    justifyContent: 'center', 
+    paddingVertical: 12, 
+    marginHorizontal: 20, 
+    marginTop: 10, 
+    marginBottom: 15, 
+    backgroundColor: '#FFFFFF', 
+    borderRadius: 15, 
+    shadowColor: '#000', 
+    shadowOffset: { width: 0, height: 2 }, 
+    shadowOpacity: 0.08, 
+    shadowRadius: 4, 
+    elevation: 2 
+  },
+  headerTitle: { 
+    fontSize: 20, 
+    fontWeight: 'bold', 
+    color: '#F97316', 
+    marginLeft: 10 
+  },
+  emptyMessage: { 
+    fontSize: 16, 
+    color: '#999', 
+    textAlign: 'center', 
+    marginTop: 50 
+  },
+  fabButton: { 
+    width: 60, 
+    height: 60, 
+    backgroundColor: '#FF8C42', 
+    borderRadius: 30, 
+    position: 'absolute', 
+    bottom: 30, 
+    right: 20, 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    shadowColor: '#000', 
+    shadowOffset: { width: 0, height: 3 }, 
+    shadowOpacity: 0.2, 
+    shadowRadius: 5, 
+    elevation: 5 
+  },
+
+  // --- SectionList 전용 스타일 ---
+  sectionHeader: { 
+    fontSize: 16, 
+    fontWeight: 'bold', 
+    color: '#333', 
+    backgroundColor: '#FDF6EC', 
+    paddingVertical: 10, 
+    paddingHorizontal: 20 
+  },
+  itemSeparator: { 
+    height: 15 
+  },
+  sectionSeparator: { 
+    height: 10 
+  },
 });
+
+// const styles = StyleSheet.create({
+//     container: { flex: 1, backgroundColor: '#FDF6EC' },
+//     header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingVertical: 12, marginHorizontal: 20, marginTop: 10, marginBottom: 15, backgroundColor: '#FFFFFF', borderRadius: 15, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.08, shadowRadius: 4, elevation: 2 },
+//     headerTitle: { fontSize: 20, fontWeight: 'bold', color: '#F97316', marginLeft: 10 },
+//     emptyMessage: { fontSize: 16, color: '#999', textAlign: 'center', marginTop: 50 },
+//     sectionHeader: { fontSize: 16, fontWeight: 'bold', color: '#333', backgroundColor: '#FDF6EC', paddingVertical: 10, paddingHorizontal: 20 },
+//     diaryItem: { backgroundColor: '#FFF', borderRadius: 12, padding: 15, marginHorizontal: 20, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.08, shadowRadius: 4, elevation: 2 },
+//     diaryTitle: { fontSize: 18, fontWeight: 'bold', color: '#333', marginBottom: 10 },
+//     diaryContent: { fontSize: 16, color: '#555', lineHeight: 22, marginTop: 10 },
+//     image: { width: '100%', aspectRatio: 1.5, borderRadius: 10, resizeMode: 'cover' },
+//     itemSeparator: { height: 15 },
+//     sectionSeparator: { height: 10 },
+//     fabButton: { width: 60, height: 60, backgroundColor: '#FF8C42', borderRadius: 30, position: 'absolute', bottom: 30, right: 20, justifyContent: 'center', alignItems: 'center', shadowColor: '#000', shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.2, shadowRadius: 5, elevation: 5 },
+//     itemHeader: {
+//         width: '100%',
+//         flexDirection: 'row',
+//         justifyContent: 'space-between',
+//         alignItems: 'center',
+//         marginBottom: 10,
+//     },
+//     dateText: { 
+//         fontSize: 14, 
+//         fontWeight: 'bold', 
+//         color: '#888', 
+//     },
+//     ratingEmoji: {
+//         fontSize: 20,
+//     }
+// });
 
 export default TodayTableScreen;
