@@ -86,6 +86,13 @@ const ContentTab = () => {
             marginBottom: Platform.OS === 'ios' ? 0 : 5,
           }
         }}
+        listeners={({ navigation }) => ({
+            tabPress: (e) => {
+                e.preventDefault(); // 기본 동작을 막고
+                // 'Diary' 탭의 'TimelineScreen'으로 이동하라는 새 명령을 내림
+                navigation.navigate('Diary', { screen: 'TimelineScreen' });
+            },
+        })} 
       />
 
       {/* --- 3. 지도 탭 --- */}
