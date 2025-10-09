@@ -10,6 +10,9 @@ router.post('/', muckitController.addMuckit);
 // GET /api/users/:userId/muckits
 router.get('/', muckitController.getMyMuckits);
 
+// PATCH /api/users/:userId/muckits/:muckitId
+router.patch('/:muckitId', muckitController.updateMuckitStatus);
+
 // DELETE /api/users/:userId/muckits/:muckitId
 router.delete('/:muckitId', muckitController.deleteMuckit);
 

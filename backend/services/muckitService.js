@@ -10,6 +10,11 @@ const muckitService = {
         return maps.find(store => store.id === Number(id));
     },
 
+    async updateMuckitStatus(id, status) {
+        // id가 일치하는 항목을 찾아서 status 컬럼의 값을 업데이트
+        return Map.update({ status }, { where: { id } });
+    },
+    
     async deleteMuckit(id) {
         return Map.destroy({ where: { id } });
     },

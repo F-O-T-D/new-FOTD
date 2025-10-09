@@ -45,6 +45,11 @@ module.exports = class Map extends Sequelize.Model {
                 allowNull: false,
                 defaultValue: Sequelize.NOW,
             },
+            status: {
+                type: Sequelize.ENUM('WISHED', 'VISITED'), // '가고싶음', '다녀옴' 두 가지 상태
+                allowNull: false,
+                defaultValue: 'WISHED', // 기본값은 '가고싶음'
+            },
         }, 
         {
             sequelize,

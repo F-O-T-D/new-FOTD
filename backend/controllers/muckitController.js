@@ -43,6 +43,23 @@ const muckitController = {
         }
     },
 
+    async updateMuckitStatus(req, res) {
+        try {
+            const { muckitId } = req.params;
+            const { status } = req.body; // 요청의 body에서 새로운 status 값을 가져옴
+
+            const [updatedCount] = await muckitService.updateMuckitStatus(muckitId, status);
+
+            if (updatedCount === 0) {
+                return res.status(404).json({ success: false, error: 'Muckit not found' });
+            }
+            res.status(200).json({ success: true, message: 'Muckit status updated' });
+        } catch (error) {
+            console.error('먹킷리스트 상태 업데이트 오류:', error);
+            res.status(500).json({ success: false, error: 'Error updating muckit status' });
+        }
+    },
+    
         async deleteMuckit(req, res) {  // deleteStore -> deleteMuckit
         try {
             const { muckitId } = req.params; 

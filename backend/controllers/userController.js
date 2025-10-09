@@ -3,18 +3,18 @@ const userService = require('../services/userService');
 const userController = {
 
 
-    async getAllUsers(req, res) {
-        try {
-            const users = await userService.getAllUsers();
-            res.json(users);
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ success: false, error: 'Error fetching users' });
-        }
-    }, 
+    // async getAllUsers(req, res) {
+    //     try {
+    //         const users = await userService.getAllUsers();
+    //         res.json(users);
+    //     } catch (error) {
+    //         console.error(error);
+    //         res.status(500).json({ success: false, error: 'Error fetching users' });
+    //     }
+    // }, 
 
-    async getUser(req, res) {
-        const userId = req.params.userId;
+    async getMyInfo(req, res) {
+        const userId = req.user.id;
         try {
             const user = await userService.getUserById(userId);
             if (!user) return res.status(404).json({ success: false, error: 'User not found' });
@@ -26,7 +26,8 @@ const userController = {
         }
     },
 
-    async update(req, res) {
+    async updateMyInfo(req, res) {
+        const userId = req.user.id;
         try {
             const user = await userService.updateUser(req.params.userId, req.body);
             res.status(200).json({ success: true, data: user });
@@ -36,7 +37,8 @@ const userController = {
         }
     },
 
-    async delete(req, res) {
+    async deleteMyAccount(req, res) {
+        const userId = req.user.id;
         try {
             await userService.deleteUser(req.params.userId);
             res.status(200).json({ success: true, message: 'User deleted successfully' });
