@@ -13,11 +13,11 @@ const moodEmoticons = ['😃', '😊', '😐', '😢', '😠']; // 이모티콘 
 
 const DiaryEntryScreen = ({ route }) => {
   const navigation = useNavigation();
-  const { diaryToEdit, date: newDate } = route.params || {}; //수정할 데이터 or 새 글의 날짜를 받아옴
+  const { diaryToEdit, date: newDate, initialData, muckitId } = route.params || {}; //수정할 데이터 or 새 글의 날짜를 받아옴
   const isEditing = !!diaryToEdit; //수정할 데이터가 있다면 수정모드
 
   const [date, setDate] = useState(diaryToEdit?.date || newDate || new Date().toISOString().split('T')[0]);
-  const [title, setTitle] = useState(diaryToEdit?.title || '');
+  const [title, setTitle] = useState(diaryToEdit?.title || initialData?.title || '');
   const [content, setContent] = useState(diaryToEdit?.content || '');
   const [foodImage, setFoodImage] = useState(diaryToEdit?.image || null);
   // 선택된 평점을 저장할 state 추가
@@ -87,7 +87,8 @@ const DiaryEntryScreen = ({ route }) => {
           title, 
           content, 
           image: foodImage,
-          rating };
+          rating,
+          muckitId };
 
       if (isEditing) {
           // '수정 모드'일 경우: PATCH API 호출

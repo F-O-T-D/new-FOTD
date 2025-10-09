@@ -20,7 +20,7 @@ const diaryService = {
     },
 
     // 일기 추가
-    async addDiary(userId, date, title, content, image, rating) {
+    async addDiary(userId, date, title, content, image, rating,  muckitId) {
         return await Diary.create({
             userId,
             date,
@@ -28,6 +28,7 @@ const diaryService = {
             content,
             image, // 이미지 URL 저장 가능
             rating,
+             muckitId,
         });
     },
 

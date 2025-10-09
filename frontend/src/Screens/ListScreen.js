@@ -145,9 +145,13 @@ const ListScreen = () => {
                   onPress: () => {
                       const today = new Date().toISOString().split('T')[0];
                       // 일기 작성 화면으로 이동하며, 가게 이름을 제목 초기값으로 전달
-                      navigation.navigate('DiaryEntryScreen', { 
+                      navigation.navigate('Diary', { // 1. 'Diary'라는 이름의 탭으로 먼저 이동하고,
+                        screen: 'DiaryEntryScreen', // 2. 그 안에서 'DiaryEntryScreen' 화면을 찾아라
+                        params: { 
                           date: today,
-                          diaryToEdit: { title: item.name } 
+                          initialData: { title: item.name },
+                          muckitId: item.id
+                        }
                       });
                   }
               }

@@ -62,6 +62,7 @@ module.exports = class Map extends Sequelize.Model {
         });
     }
     static associate(db) {
+        db.Map.hasMany(db.Diary, { foreignKey: 'muckitId', sourceKey: 'id' });
         // Map은 User에 속해있다
         db.Map.belongsTo(db.User, { foreignKey: 'userId', as:'user'});
     }

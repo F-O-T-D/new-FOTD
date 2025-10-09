@@ -20,12 +20,13 @@ const muckitRoutes = require('./routes/muckitRoutes');
 
 // 독립적인 라우트
 app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
 
 // 사용자에게 종속된 라우트 (계층적으로 연결)
 app.use('/api/users/:userId/diaries', diaryRoutes);
 app.use('/api/users/:userId/muckits', muckitRoutes);
 
+// 가장 일반적인 경로
+app.use('/api/users', userRoutes);
 
 // 없는 라우트 처리 404
 app.use((req, res, next) => {
