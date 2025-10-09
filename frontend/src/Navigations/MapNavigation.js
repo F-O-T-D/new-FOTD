@@ -15,10 +15,9 @@ const MapNavigation = () => {
         name={ContentRoutes.LIST}  // "ListScreen"을 ContentRoutes.LIST로 명확하게 등록
         component={ListScreen}
         options={{
-          headerShown: true,
+          headerShown: false,
           headerStyle: { backgroundColor: BACKCARROT },
           headerTintColor: PRIMARY.DEFAULT,
-          headerShown: false,
         }}
       />
       <Stack.Screen
@@ -34,7 +33,7 @@ const MapNavigation = () => {
         name={MapRoutes.LISTMAP}  // "ListMapScreen"을 MapRoutes.LISTMAP으로 등록
         component={ListMapScreen}
         options={{
-          headerShown: true,
+          headerShown: false,
           headerStyle: { backgroundColor: BACKCARROT },
           headerTintColor: PRIMARY.DEFAULT,
         }}
