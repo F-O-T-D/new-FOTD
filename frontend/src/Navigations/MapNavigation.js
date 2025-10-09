@@ -25,7 +25,7 @@ const MapNavigation = () => {
         name={MapRoutes.MAP}  // "MapScreen"을 MapRoutes.MAP으로 등록
         component={MapScreen}
         options={{
-          headerShown: true,
+          headerShown: false,
           headerStyle: { backgroundColor: BACKCARROT },
           headerTintColor: PRIMARY.DEFAULT,
         }}
