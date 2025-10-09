@@ -1,3 +1,5 @@
+/* 장소를 검색하고 및 추가하는 스크린(실제 지도 화면 띄워진다) */
+
 import React, { useState, useRef } from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 import { WebView } from "react-native-webview";
@@ -95,6 +97,7 @@ const MapScreen = () => {
           title="검색"
           onPress={() => {
             console.log("검색 버튼 클릭됨");
+            Keyboard.dismiss(); //키보드 닫기
             fetchKakaoAddress(searchQuery);
           }}
         />
