@@ -1,7 +1,7 @@
 /* 장소를 검색하고 및 추가하는 스크린(실제 지도 화면 띄워진다) */
 
 import React, { useState, useRef } from "react";
-import { View, Text, TextInput, Button, StyleSheet } from "react-native";
+import { View, Text, TextInput, Button, StyleSheet, Keyboard, FlatList, TouchableOpacity } from "react-native";
 import { WebView } from "react-native-webview";
 import { useNavigation } from "@react-navigation/native";
 import MiniButton from "../Components/MiniButton";
@@ -13,11 +13,16 @@ const MapScreen = () => {
   const navigation = useNavigation();
   const webViewRef = useRef(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedPlace, setSelectedPlace] = useState(null);
+  const [searchResults, setSearchResults] = useState([]); // 검색 결과 목록
+  const [selectedPlace, setSelectedPlace] = useState(null); // 사용자가 목록에서 '선택'한 장소 하나
   const [user] = useUserState();
 
   // Kakao API 요청 함수 (REST API Key 사용)
   const fetchKakaoAddress = async (query) => {
+    Keyboard.dismiss();
+
+    if (!query) return;
+
     try {
       console.log(`Kakao API 요청: ${query}`);
       const response = await fetch(
@@ -37,17 +42,13 @@ const MapScreen = () => {
 
       if (data.documents && data.documents.length > 0) {
         const firstResult = data.documents[0];
-        setSelectedPlace({
-          name: firstResult.place_name,
-          address: firstResult.road_address_name || firstResult.address_name,
-          lat: firstResult.y,
-          lng: firstResult.x,
-        });
-
-        console.log("검색 결과:", firstResult);
+        //검색 결과 목록 전체를 searchResults state에 저장
+        setSearchResults(data.documents);
+        setSelectedPlace(null); //선택된 장소는 일단 초기화
       } else {
         console.log("No results found");
-        setSelectedPlace(null); // 검색 결과가 없을 때 초기화
+        setSearchResults([]); // 검색 결과가 없으면 빈 배열로 초기화
+        setSelectedPlace(null);
       }
     } catch (error) {
       console.error("Kakao API 요청 오류:", error);
@@ -92,17 +93,42 @@ const MapScreen = () => {
           placeholder="장소 검색"
           value={searchQuery}
           onChangeText={setSearchQuery}
+          onSubmitEditing={() => fetchKakaoAddress(searchQuery)} //엔터키로도 검색 가능
         />
         <Button
           title="검색"
           onPress={() => {
             console.log("검색 버튼 클릭됨");
-            Keyboard.dismiss(); //키보드 닫기
             fetchKakaoAddress(searchQuery);
           }}
         />
       </View>
-
+      {searchResults.length > 0 && (
+        <FlatList
+            data={searchResults}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+                <TouchableOpacity 
+                    style={styles.resultItem}
+                    onPress={() => {
+                        // 목록에서 항목을 선택하면, selectedPlace state를 업데이트
+                        setSelectedPlace({
+                            name: item.place_name,
+                            address: item.road_address_name || item.address_name,
+                            lat: item.y,
+                            lng: item.x,
+                        });
+                        // 검색 결과 목록은 숨김
+                        setSearchResults([]);
+                    }}
+                >
+                    <Text style={styles.resultName}>{item.place_name}</Text>
+                    <Text style={styles.resultAddress}>{item.road_address_name || item.address_name}</Text>
+                </TouchableOpacity>
+            )}
+            style={styles.resultsList}
+        />
+    )}
       {/* WebView로 Kakao 지도 표시 */}
       <WebView
         ref={webViewRef}
@@ -181,11 +207,37 @@ const styles = StyleSheet.create({
     padding: 10,
     marginRight: 10,
   },
-  infoContainer: {
-    padding: 10,
-    backgroundColor: "#f8f8f8",
-    alignItems: "center",
+
+  // --- 검색 결과 목록 스타일 ---
+  resultsList: {
+      position: 'absolute',
+      top: 60, // 검색창 바로 아래
+      left: 10,
+      right: 10,
+      maxHeight: 250, // 목록의 최대 높이
+      backgroundColor: 'white',
+      borderRadius: 5,
+      zIndex: 10, // 지도를 덮도록 설정
+      borderWidth: 1,
+      borderColor: '#eee',
   },
+  resultItem: {
+      padding: 15,
+      borderBottomWidth: 1,
+      borderBottomColor: '#eee',
+  },
+  resultName: {
+      fontSize: 16,
+      fontWeight: 'bold',
+  },
+  resultAddress: {
+      fontSize: 12,
+      color: 'gray',
+  },
+  // --- 하단 정보창 스타일 ---
+  infoContainer: { padding: 15, backgroundColor: "white", alignItems: "center", borderTopWidth: 1, borderColor: '#eee' },
+  infoName: { fontSize: 18, fontWeight: 'bold' },
+  infoAddress: { color: 'gray', marginBottom: 10 },
 });
 
 export default MapScreen;
